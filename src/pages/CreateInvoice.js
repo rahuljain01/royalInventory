@@ -1,11 +1,24 @@
 import React from 'react';
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
+import styled from 'styled-components';
+import { useHistory } from "react-router-dom";
+
+const StyledDiv = styled.div`
+  margin-left: 40rem;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  height: 80px;
+  justify-content: flex-start;
+`;
 
 function CreateInvoice() {
     const initialValues = {
         customerNumber: '',
         items: []
     };
+
+    let history = useHistory();
+
 
     function addItem(e, values, setValues) {
       const items = [...values.items]
@@ -18,6 +31,11 @@ function CreateInvoice() {
     function onSubmit(fields) {
         // display form field values on success
         alert(JSON.stringify(fields, null, 4));
+        alert(fields.customerNumber);
+        history.push({pathname: '/pdf',
+                        state: fields,
+    })
+
     }
 
     return (
@@ -43,7 +61,7 @@ function CreateInvoice() {
                             return (
                                 <div key={i} className="list-group list-group-flush">
                                     <div className="list-group-item">
-                                        <h5 className="card-title" style={ {margin: '1rem 0 1rem 20rem', width: '1000px', height: '40px'} }>Ticket {i + 1}</h5>
+                                        <h5 className="card-title" style={ {margin: '1rem 0 1rem 20rem', width: '1000px', height: '40px'} }>Item {i + 1}</h5>
                                         <div className="form-row">
                                             <div className="form-group col-6" style={ {margin: '1rem 0 1rem 20rem', width: '1000px', height: '40px'} }>
                                                 <label style={ {margin: '0rem 1rem 0rem 1rem'}}>Name</label>
@@ -62,18 +80,18 @@ function CreateInvoice() {
                             );
                         }))}
                         </FieldArray>
-                        <div style={{justifyContent: 'center',
+                        <StyledDiv style={{justifyContent: 'left',
       alignItems: 'center'}} >
                             <button variant="primary" size="sm" type="button" onClick={e => addItem(e, values, setValues)}>
                                 Add Item
                             </button>
-                        </div>
-                        <div className="card-footer text-center border-top-0">
-                            <button type="submit" className="btn btn-primary mr-1">
+                        </StyledDiv>
+                        <StyledDiv className="card-footer text-center border-top-0">
+                            <button type="submit" className="btn-primary mr-1">
                                 Create Invoice
                             </button>
                             <button className="btn btn-secondary mr-1" type="reset">Reset</button>
-                        </div>
+                        </StyledDiv>
                     </div>
                 </Form>
             )}

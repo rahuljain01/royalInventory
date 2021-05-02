@@ -6,6 +6,7 @@ import { Reports, ReportsOne, ReportsTwo, ReportsThree } from './pages/Reports';
 import Team from './pages/Team';
 import AddCustomer from './pages/AddCustomer';
 import CreateInvoice from './pages/CreateInvoice';
+import PdfInvoice from './pages/PdfInvoice';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path='/reports/reports2' exact component={ReportsTwo} />
         <Route path='/createInvoice' exact component={CreateInvoice} />
         <Route path='/team' exact component={Team} />
+        <Route path='/pdf' exact component={PdfInvoice} />
       </Switch>
     </Router>
   );
