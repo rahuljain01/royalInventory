@@ -1,0 +1,52 @@
+.icon {
+    display: inline-block;
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border: 0;
+    border-radius: 50%;
+  }
+
+  .icon-add::before, .icon-add::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 10px;
+    left: 7px;
+    top: 3px;
+    background-color: #ffffff;
+}
+.icon-add::after {
+    transform: rotate(-90deg);
+}
+
+.bg-green {
+    background-color: green;
+  }
+
+  .ml-10 {
+    margin-left: 10px;
+  }
+  
+
+  button.link {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: #0f0fdb;
+}
+
+button.removeLink {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: #0f0fdb;
+}
+button.link:hover, button.link:focus,button.removeLink:hover {
+    text-decoration: underline;
+}
+button.link:focus,button.removeLink:focus {
+    outline: 1px dotted;
+    opacity: 1;
+}

@@ -66,10 +66,10 @@ const validate = values => {
   return errors;
 };
 
-const AddCustomer = () => {
+const AddCustomer = (customer) => {
 
   const formik = useFormik({
-    initialValues: {
+    initialValues: customer? customer: {
       customerName: '',
       phoneNumber:0,
       address:'',
@@ -77,6 +77,7 @@ const AddCustomer = () => {
       gstNumber:'',
     },
     validate,
+    enableReinitialize:true,
     onSubmit: values => {
       alert(JSON.stringify(values, null, 2));
     },
@@ -95,8 +96,8 @@ const AddCustomer = () => {
             type="text"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.itemName} />
-            {formik.errors.itemName ? <div>{formik.errors.itemName}</div> : null}
+            value={formik.values.customerName} />
+            {formik.errors.customerName ? <div>{formik.errors.customerName}</div> : null}
         </div>
         <div>
           <InputLabel>

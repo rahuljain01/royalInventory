@@ -74,10 +74,35 @@ const formikEnhancer = withFormik({
       ...values
     };
     console.log(payload)
-    setTimeout(() => {
-      alert(JSON.stringify(payload, null, 2));
-      setSubmitting(false);
-    }, 1000);
+    axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
+        axios.defaults.headers.common['Access-Control-Allow-Headers'] = '*'
+        axios.defaults.headers.common['Access-Control-Allow-Methods'] = '*'
+        const customHeaders = {
+          'content-type': 'application/json',
+        };
+
+    axios.post('https://api-manager-rf-inventory.azure-api.net/v1/api/Items', {
+      ItemName:values.itemName,
+      CategoryId:'',
+      CategoryName:values.category.value,
+      Description:values.description,
+      GSTPercent:values.gstPercentage,
+      CostPrice:values.costPrice,
+      DiscountPercent:0,
+      BrandId:'brand3',
+      BrandName:'Royal Furniture',
+      HsnCode:'9403',
+      AliasCode:values.aliasCode,
+      WarehouseId:'',
+      Quantity:values.quantity,
+      ImageUrl:values.imageUrl,
+    }, customHeaders).then(function (responseArr) {
+            console.log('SUCCESS!!');
+          })
+          .catch(function (reason) {
+            console.log('FAILURE!!');
+            alert(reason)
+          });
   },
   displayName: 'MyForm',
 });
@@ -102,23 +127,19 @@ const MyForm = props => {
   } = props;
 
   const [file, setFile] = React.useState("");
-  
+  const [imageUrl, setImageUrl] = React.useState("");
 
   function handleUpload(event) {
 
   
-    setFile(event.target.files[0]);
-    //formik.initialValues.file = event.target.files[0]
-  
+    setFile(event.target.files[0]);  
     console.log('handleUpload called')
   
     let formData = new FormData()
   
     formData.append('file', event.target.files[0]);
-    //alert(event.target.files[0])
     formData.append('upload_preset','mfdq2wyh')
     formData.append('tag','myUpload')
-    //formData.append('api_key', 'l8Y8uAlf81LNS6BZS7ZyNreX4fM');
       console.log('>> formData >> ', formData);
   
       const url = `https://api.cloudinary.com/v1_1/doxjtszxv/image/upload`
@@ -126,22 +147,17 @@ const MyForm = props => {
       const config = {
         headers: { "X-Requested-With": "XMLHttpRequest" },
       };
-  
-      // You should have a server side REST API 
       axios.post(url,
           formData,config
-        ).then(function () {
+        ).then(function (response) {
           console.log('SUCCESS!!');
-          alert('upload success')
+          setImageUrl(response.data.url)
+          setFieldValue('imageUrl', response.data.url)
         })
         .catch(function (reason) {
           console.log('FAILURE!!');
           alert('upload failure' + reason + url + formData)
         });
-  
-    //alert('file upload called');
-    // Add code here to upload file to server
-    // ...
   }
   
   return (
@@ -271,6 +287,19 @@ const MyForm = props => {
             <option value="Radish">Radish</option>
             <option value="Cherry">Cherry</option>
           </InputSelect>
+        </div>
+        <div>
+          <InputLabel>
+            Quantity:
+          </InputLabel>
+          <br />
+          <InputText 
+            type="number" 
+            id="quantity"
+            name="quantity"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.quantity} />
         </div>
         <SubmitButton type="submit">{'ADD'}</SubmitButton>
       </form>

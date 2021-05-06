@@ -7,6 +7,8 @@ import Team from './pages/Team';
 import AddCustomer from './pages/AddCustomer';
 import CreateInvoice from './pages/CreateInvoice';
 import PdfInvoice from './pages/PdfInvoice';
+import ItemView from './components/ItemView';
+import 'semantic-ui-css/semantic.min.css'
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         <Route path='/createInvoice' exact component={CreateInvoice} />
         <Route path='/team' exact component={Team} />
         <Route path='/pdf' exact component={PdfInvoice} />
+        <Route path='/itemView' exact component={ItemView} />
+        
       </Switch>
     </Router>
   );
