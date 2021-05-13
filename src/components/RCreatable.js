@@ -1,24 +1,17 @@
 import React from 'react';
 import Creatable from 'react-select/creatable';
 
-const options = [
-    { value: 'Food', label: 'Food' },
-    { value: 'Being Fabulous', label: 'Being Fabulous' },
-    { value: 'Ken Wheeler', label: 'Ken Wheeler' },
-    { value: 'ReasonML', label: 'ReasonML' },
-    { value: 'Unicorns', label: 'Unicorns' },
-    { value: 'Kittens', label: 'Kittens' },
-  ];
+
 
 class RCreatable extends React.Component {
     handleChange = value => {
       // this is going to call setFieldValue and manually update values.topcis
-      this.props.onChange('category', value);
+      this.props.onChange(this.props.name, value);
     };
   
     handleBlur = () => {
       // this is going to call setFieldTouched and manually update touched.topcis
-      this.props.onBlur('category', true);
+      this.props.onBlur(this.props.name, true);
     };
   
     render() {
@@ -26,7 +19,7 @@ class RCreatable extends React.Component {
         <div style={{ margin: '1rem 0 1rem 20rem', width: '1000px' }}>
           <Creatable
             id="color"
-            options={options}
+            options={this.props.options}
             multi={true}
             onChange={this.handleChange}
             onBlur={this.handleBlur}

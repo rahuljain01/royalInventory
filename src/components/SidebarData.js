@@ -46,8 +46,13 @@ export const SidebarData = [
         cName: 'sub-nav'
       },
       {
-        title: 'Brands',
+        title: 'Invoice',
         path: '/createInvoice',
+        icon: <IoIcons.IoIosPaper />
+      },
+      {
+        title: 'Purchase',
+        path: '/createPurchase',
         icon: <IoIcons.IoIosPaper />
       }
     ]
@@ -63,8 +68,8 @@ export const SidebarData = [
     icon: <IoIcons.IoMdPeople />
   },
   {
-    title: 'Messages',
-    path: '/messages',
+    title: 'Invoice List',
+    path: '/invoiceList',
     icon: <FaIcons.FaEnvelopeOpenText />,
 
     iconClosed: <RiIcons.RiArrowDownSFill />,

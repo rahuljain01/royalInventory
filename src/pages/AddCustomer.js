@@ -69,7 +69,7 @@ const validate = values => {
 const AddCustomer = (customer) => {
 
   const formik = useFormik({
-    initialValues: customer? customer: {
+    initialValues: customer ? customer: {
       customerName: '',
       phoneNumber:0,
       address:'',

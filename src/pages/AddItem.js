@@ -1,10 +1,11 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useFormik, withFormik } from 'formik';
-import FileUpload from '../components/FileUpload';
+import {withFormik } from 'formik';
 import axios from 'axios'
 import RCreatable from '../components/RCreatable';
+//import {config, baseUrl} from '../config/Config.js';
+import { useEffect } from 'react';
 
 
 const InputLabel = styled.label`
@@ -35,16 +36,6 @@ const InputTextArea = styled.textarea`
   justify-content: flex-start;
 `;
 
-const InputSelect = styled.select`
-  margin-left: 20rem;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-  font-size: 1rem;
-  height: 40px;
-  width:1000px;
-  justify-content: flex-start;
-`;
-
 const SubmitButton = styled.button`
   margin-left: 700px;
   margin-bottom: 1rem;
@@ -53,7 +44,14 @@ const SubmitButton = styled.button`
   height: 40px;
   width:80px;
   justify-content: flex-start;
+  background-color:green;
+  color: white;
+  border-radius:4px;
+  border: 0px;
 `;
+
+
+const baseUrl = 'https://api-manager-rf-inventory.azure-api.net/v1/api/'
 
 const formikEnhancer = withFormik({
   mapPropsToValues: props => ({
@@ -81,19 +79,19 @@ const formikEnhancer = withFormik({
           'content-type': 'application/json',
         };
 
-    axios.post('https://api-manager-rf-inventory.azure-api.net/v1/api/Items', {
+    axios.post(baseUrl + 'Items', {
       ItemName:values.itemName,
-      CategoryId:'',
-      CategoryName:values.category.value,
+      CategoryId:values.category.value,
+      CategoryName:values.category.label,
       Description:values.description,
       GSTPercent:values.gstPercentage,
       CostPrice:values.costPrice,
       DiscountPercent:0,
-      BrandId:'brand3',
-      BrandName:'Royal Furniture',
-      HsnCode:'9403',
+      BrandId:values.brand.value,
+      BrandName:values.brand.label,
+      HsnCode:values.hsnCode,
       AliasCode:values.aliasCode,
-      WarehouseId:'',
+      WarehouseId:values.warehouse.value,
       Quantity:values.quantity,
       ImageUrl:values.imageUrl,
     }, customHeaders).then(function (responseArr) {
@@ -128,6 +126,58 @@ const MyForm = props => {
 
   const [file, setFile] = React.useState("");
   const [imageUrl, setImageUrl] = React.useState("");
+  const [categoryOptions, setCategoryOptions] = React.useState([]);
+  const [brandOptions, setBrandOptions] = React.useState([]);
+  const [warehouseOptions, setWarehouseOptions] = React.useState([]);
+  
+
+  useEffect(() => {
+    getCategories()
+    getBrands()
+    getWarehouse()
+  }, []);
+
+  function getCategories() {
+    axios.get(baseUrl + 'categories').then(function (responseArr) {
+      setCategoryOptions(convertDataToDropdownData(responseArr.data))
+      console.log('SUCCESS!!');
+    })
+    .catch(function (reason) {
+      console.log('FAILURE!!');
+      alert(reason)
+    });
+  }
+
+  function getBrands() {
+    axios.get(baseUrl + 'brands').then(function (responseArr) {
+      setBrandOptions(convertDataToDropdownData(responseArr.data))
+      console.log('SUCCESS!!');
+    })
+    .catch(function (reason) {
+      console.log('FAILURE!!');
+      alert(reason)
+    });
+  }
+
+  function getWarehouse() {
+    axios.get(baseUrl + 'warehouse').then(function (responseArr) {
+      setWarehouseOptions(convertDataToDropdownData(responseArr.data))
+      console.log('SUCCESS!!');
+    })
+    .catch(function (reason) {
+      console.log('FAILURE!!');
+      alert(reason)
+    });
+  }
+
+  function convertDataToDropdownData(data) {
+    let dropdownData = []
+    data.map((node, index) => {
+      dropdownData.push({'value':node.id , 'label':node.name})
+    })
+
+    return dropdownData
+  }
 
   function handleUpload(event) {
 
@@ -182,9 +232,11 @@ const MyForm = props => {
           </InputLabel>
           <br />
           <RCreatable
+          name="category"
           onChange={setFieldValue}
           value = {values.category}
           onBlur={setFieldTouched}
+          options={categoryOptions}
       />
         </div>
         <div>
@@ -238,12 +290,13 @@ const MyForm = props => {
           Brand:
         </InputLabel>
         <br />
-        <InputSelect
-            id="brand"
-            name="brand"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.brand} />
+        <RCreatable
+          name="brand"
+          onChange={setFieldValue}
+          value = {values.brand}
+          onBlur={setFieldTouched}
+          options={brandOptions}
+      />
         </div>
         <div>
           <InputLabel>
@@ -276,17 +329,13 @@ const MyForm = props => {
             Warehouse:
           </InputLabel>
           <br />
-          <InputSelect
-            id="warehouse"
-            name="warehouse"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.warehouse} 
-          >
-            <option value="Orange">Orange</option>
-            <option value="Radish">Radish</option>
-            <option value="Cherry">Cherry</option>
-          </InputSelect>
+          <RCreatable
+          name='warehouse'
+          onChange={setFieldValue}
+          value = {values.warehouse}
+          onBlur={setFieldTouched}
+          options={warehouseOptions}
+      />
         </div>
         <div>
           <InputLabel>
@@ -327,5 +376,6 @@ const AddItem = () => {
     <MyEnhancedForm />
   );
 };
+
 
 export default AddItem;
