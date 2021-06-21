@@ -1,13 +1,13 @@
 import './App.css';
 import Sidebar from './components/Sidebar';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import AddItem from './pages/AddItem';
+import AddItem from './pages/AddItem/AddItem';
 import { Reports, ReportsOne, ReportsTwo, ReportsThree } from './pages/Reports';
 import Team from './pages/Team';
 import AddCustomer from './pages/AddCustomer';
 import CreateInvoice from './pages/CreateInvoice';
 import PdfInvoice from './pages/PdfInvoice';
-import ItemView from './components/ItemView';
+import ItemView from './pages/ItemView';
 import 'semantic-ui-css/semantic.min.css'
 import InvoiceList from './pages/InvoicesList'
 import PurchaseOrder from './pages/PurchaseOrder';

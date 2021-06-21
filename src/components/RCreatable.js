@@ -16,7 +16,7 @@ class RCreatable extends React.Component {
   
     render() {
       return (
-        <div style={{ margin: '1rem 0 1rem 20rem', width: '1000px' }}>
+        <div style={{ margin: 'auto'}}>
           <Creatable
             id="color"
             options={this.props.options}

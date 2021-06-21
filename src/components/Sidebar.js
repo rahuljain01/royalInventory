@@ -11,8 +11,31 @@ const Nav = styled.div`
   background: #15171c;
   height: 80px;
   display: flex;
+  top:0;
+  left:0;
   justify-content: flex-start;
   align-items: center;
+  position:fixed;
+  width:100%;
+  z-index:200;
+`;
+
+const TitleDiv = styled.div`
+  background: #15171c;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+`;
+
+const Label = styled.label`
+  font-size: 1.5rem;
+  display: block;
+  color: white;
+  justify-content: flex-start;
+  align-items: center;
+  vertical-align: middle;
 `;
 
 const NavIcon = styled(Link)`
@@ -53,6 +76,7 @@ const Sidebar = () => {
           <NavIcon to='#'>
             <FaIcons.FaBars onClick={showSidebar} />
           </NavIcon>
+          <TitleDiv> <Label>Royal Furniture</Label> </TitleDiv>
         </Nav>
         <SidebarNav sidebar={sidebar}>
           <SidebarWrap>

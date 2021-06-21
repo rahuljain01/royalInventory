@@ -1,0 +1,15 @@
+.table-header {
+    /*border: 1px solid black;*/
+    
+    text-align: start;
+    padding-left: 0.5rem;
+    height: 4rem;
+}
+
+table {
+    border-collapse: collapse;
+  }
+
+  thead {
+      background-color: gray;
+  }

@@ -1,5 +1,5 @@
 import React from 'react';
-import MyEnhancedForm from './AddItem'
+import MyEnhancedForm from './AddItem/AddItem'
 import styled from 'styled-components';
 
 const ModalDiv = styled.div`

@@ -1,0 +1,6 @@
+.invoice-item-container {
+    border-bottom:1px solid gray;
+    height: 6rem;
+    display: flex;
+    align-items: center;
+}

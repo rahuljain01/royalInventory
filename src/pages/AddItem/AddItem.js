@@ -1,53 +1,43 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import {withFormik } from 'formik';
+import { withFormik } from 'formik';
 import axios from 'axios'
-import RCreatable from '../components/RCreatable';
+import RCreatable from '../../components/RCreatable';
 //import {config, baseUrl} from '../config/Config.js';
 import { useEffect } from 'react';
+import './AddItem.css'
+import CtaButton from '../../components/CtaButton/CtaButton';
+import Card from '../../components/Card/Card';
 
 
 const InputLabel = styled.label`
-  margin-left: 20rem;
-  margin-bottom: 2rem;
+  margin: auto;
   font-size: 1rem;
-  height: 80px;
-  justify-content: flex-start;
+  /*font-weight: bold;*/
+  display: block;
+  padding-bottom: 2px;
 `;
 
 const InputText = styled.input`
-  margin-left: 20rem;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
+  display:block;
+  margin: auto;
   font-size: 1rem;
-  height: 40px;
-  width:1000px;
+  height: 30px;
+  width:100%;
+  border:1px solid rgb(196, 196, 196);
+  border-radius: 4px;
   justify-content: flex-start;
 `;
 
 const InputTextArea = styled.textarea`
-  margin-left: 20rem;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
+  display:block;
+  margin: auto;
   font-size: 1rem;
   height: 80px;
-  width:1000px;
+  width:100%;
+  border:1px solid rgb(196, 196, 196);
   justify-content: flex-start;
-`;
-
-const SubmitButton = styled.button`
-  margin-left: 700px;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-  font-size: 1rem;
-  height: 40px;
-  width:80px;
-  justify-content: flex-start;
-  background-color:green;
-  color: white;
-  border-radius:4px;
-  border: 0px;
 `;
 
 
@@ -211,12 +201,12 @@ const MyForm = props => {
   }
   
   return (
-    <form  onSubmit={handleSubmit}>
-        <div>
+    <Card className='add-item-container'>
+    <form  onSubmit={handleSubmit} >
+        <div className="container__field-div">
           <InputLabel>
             Item Name:
           </InputLabel>
-          <br />
           <InputText 
             id="itemName"
             name="itemName"
@@ -226,11 +216,10 @@ const MyForm = props => {
             value={values.itemName} />
             {errors.itemName ? <div>{errors.itemName}</div> : null}
         </div>
-        <div>
+        <div className="container__field-div">
           <InputLabel>
             Category:
           </InputLabel>
-          <br />
           <RCreatable
           name="category"
           onChange={setFieldValue}
@@ -239,19 +228,17 @@ const MyForm = props => {
           options={categoryOptions}
       />
         </div>
-        <div>
+        <div className="container__field-div">
             <InputLabel>
               Upload Image:
             </InputLabel>
-            <br />
-            <InputText type="file" onChange={handleUpload}/>
+            <input multiple type="file" onChange={handleUpload}/>
         </div>
 
-        <div>
+        <div className="container__field-div">
           <InputLabel>
             Description:
           </InputLabel>
-          <br />
           <InputTextArea 
             id="description"
             name="description"
@@ -259,11 +246,10 @@ const MyForm = props => {
             onBlur={handleBlur}
             value={values.description} />
         </div>
-          <div>
+          <div className="container__field-div">
           <InputLabel>
             GST percentage:
           </InputLabel>
-          <br />
           <InputText 
             id="gstPercentage"
             name="gstPercentage"
@@ -272,11 +258,10 @@ const MyForm = props => {
             onBlur={handleBlur}
             value={values.gstPercentage} />
           </div>   
-          <div>
+          <div className="container__field-div">
         <InputLabel>
           Cost price:
         </InputLabel>
-        <br />
         <InputText 
             id="costPrice"
             name="costPrice"
@@ -285,11 +270,10 @@ const MyForm = props => {
             onBlur={handleBlur}
             value={values.costPrice} />
         </div>
-        <div>
+        <div className="container__field-div">
         <InputLabel>
           Brand:
         </InputLabel>
-        <br />
         <RCreatable
           name="brand"
           onChange={setFieldValue}
@@ -298,11 +282,10 @@ const MyForm = props => {
           options={brandOptions}
       />
         </div>
-        <div>
+        <div className="container__field-div">
           <InputLabel>
             HSN code:
           </InputLabel>
-          <br />
           <InputText 
             type="text" 
             id="hsnCode"
@@ -311,11 +294,10 @@ const MyForm = props => {
             onBlur={handleBlur}
             value={values.hsnCode} />
         </div>
-        <div>
+        <div className="container__field-div">
           <InputLabel>
             Alias code:
           </InputLabel>
-          <br />
           <InputText 
             type="text" 
             id="aliasCode"
@@ -324,11 +306,10 @@ const MyForm = props => {
             onBlur={handleBlur}
             value={values.aliasCode} />
         </div>
-        <div>
+        <div className="container__field-div">
           <InputLabel>
             Warehouse:
           </InputLabel>
-          <br />
           <RCreatable
           name='warehouse'
           onChange={setFieldValue}
@@ -337,11 +318,10 @@ const MyForm = props => {
           options={warehouseOptions}
       />
         </div>
-        <div>
+        <div className="container__field-div">
           <InputLabel>
             Quantity:
           </InputLabel>
-          <br />
           <InputText 
             type="number" 
             id="quantity"
@@ -350,8 +330,9 @@ const MyForm = props => {
             onBlur={handleBlur}
             value={values.quantity} />
         </div>
-        <SubmitButton type="submit">{'ADD'}</SubmitButton>
+        <CtaButton type="submit">{'ADD'}</CtaButton>
       </form>
+      </Card>
   );
 };
 
