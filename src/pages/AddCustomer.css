@@ -1,0 +1,11 @@
+.customer-container {
+    width: 60%;
+}
+
+.customer-invoice-container {
+    width: 100%;
+    margin: 0px;
+    border-radius: 0px;
+    padding: 0rem;
+    box-shadow: none;
+}

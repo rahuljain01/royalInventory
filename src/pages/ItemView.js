@@ -5,11 +5,15 @@ import Card from "../components/Card/Card";
 import ListItem from "../components/ListItem";
 import "../components/ListItem.css";
 import "./ItemView.css";
+import { useHistory } from "react-router-dom";
+import PageTitleContainer from "../components/PageTitleContainer/PageTitleContainer";
 
 const ItemView = () => {
   const [items, setItems] = useState([]);
 
   const [filteredItem, setFilteredItem] = useState([]);
+
+  let history = useHistory();
 
   useEffect(() => {
     axios
@@ -17,6 +21,7 @@ const ItemView = () => {
       .then(function (responseArr) {
         console.log("SUCCESS!!");
         setItems(responseArr.data);
+        setFilteredItem(responseArr.data)
       })
       .catch(function (reason) {
         console.log("FAILURE!!");
@@ -28,8 +33,12 @@ const ItemView = () => {
      setFilteredItem(items.filter(item => {return item.itemName.toLowerCase().indexOf(event.target.value.toLowerCase()) !== -1})) 
   }
 
+  const onItemClick = (index) => {
+    history.push({ pathname: "/addItem", state: filteredItem[index] });
+  }
+
   return (
-    <>
+    <PageTitleContainer title='Item List'>
     <div className='background-div'></div>
     <div className='search-div'><input 
             id="itemName"
@@ -41,11 +50,11 @@ const ItemView = () => {
     <Card className="item-view-container">
       {filteredItem.map((item, index) => (
         <>
-          <ListItem item={item} />
+          <ListItem item={item} index={index} onClick={onItemClick}/>
         </>
       ))}
     </Card>
-    </>
+    </PageTitleContainer>
   );
 };
 

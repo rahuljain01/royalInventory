@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import './AddItem.css'
 import CtaButton from '../../components/CtaButton/CtaButton';
 import Card from '../../components/Card/Card';
+import PageTitleContainer from '../../components/PageTitleContainer/PageTitleContainer';
 
 
 const InputLabel = styled.label`
@@ -45,17 +46,16 @@ const baseUrl = 'https://api-manager-rf-inventory.azure-api.net/v1/api/'
 
 const formikEnhancer = withFormik({
   mapPropsToValues: props => ({
-      itemName: '',
-      description:'',
-      gstPercentage:18,
-      costPrice:0,
-      brand:'',
-      hsnCode:9403,
-      aliasCode:'',
-      warehouse:'',
-      quantity: 0,
+      itemName: props.initialValues.itemName,
+      description:props.initialValues.description,
+      gstPercentage:props.initialValues.gstPercentage,
+      brand:props.initialValues.brand,
+      hsnCode:props.initialValues.hsnCode,
+      aliasCode:props.initialValues.aliasCode,
       file: null,
-      category: [],
+      parentItemName:'',
+      category: props.initialValues.category,
+      numberOfCopy:1,
   }),
   handleSubmit: (values, { setSubmitting }) => {
     const payload = {
@@ -69,22 +69,38 @@ const formikEnhancer = withFormik({
           'content-type': 'application/json',
         };
 
-    axios.post(baseUrl + 'Items', {
-      ItemName:values.itemName,
-      CategoryId:values.category.value,
-      CategoryName:values.category.label,
-      Description:values.description,
-      GSTPercent:values.gstPercentage,
-      CostPrice:values.costPrice,
-      DiscountPercent:0,
-      BrandId:values.brand.value,
-      BrandName:values.brand.label,
-      HsnCode:values.hsnCode,
-      AliasCode:values.aliasCode,
-      WarehouseId:values.warehouse.value,
-      Quantity:values.quantity,
-      ImageUrl:values.imageUrl,
-    }, customHeaders).then(function (responseArr) {
+      var bodyDict = {
+        itemName:values.itemName,
+        isParent:1,
+        parentItemName:values.itemName,
+        numberOfCopy: 0,
+        description:values.description,
+        gstpercent:values.gstPercentage,
+        hsncode:values.hsnCode,
+        aliasCode:values.aliasCode,
+        imageUrl:values.imageUrl,
+      }
+
+      let isBrandCreated = !Number.isInteger(values.brand.value)
+      let isCategoryCreated = !Number.isInteger(values.category.value)
+
+      if (isBrandCreated) {
+        bodyDict['brand'] = {
+          brandName: values.brand.value
+        }
+      } else {
+        bodyDict['brandId'] = values.brand.value
+      }
+
+      if (isCategoryCreated) {
+        bodyDict['category'] = {
+          brandName: values.category.value
+        }
+      } else {
+        bodyDict['categoryId'] = values.category.value
+      }
+
+    axios.post(baseUrl + 'Items', bodyDict, customHeaders).then(function (responseArr) {
             console.log('SUCCESS!!');
           })
           .catch(function (reason) {
@@ -102,16 +118,12 @@ const formikEnhancer = withFormik({
 const MyForm = props => {
   const {
     values,
-    touched,
-    dirty,
     errors,
     handleChange,
     handleBlur,
     handleSubmit,
-    handleReset,
     setFieldValue,
     setFieldTouched,
-    isSubmitting,
   } = props;
 
   const [file, setFile] = React.useState("");
@@ -124,7 +136,6 @@ const MyForm = props => {
   useEffect(() => {
     getCategories()
     getBrands()
-    getWarehouse()
   }, []);
 
   function getCategories() {
@@ -149,9 +160,9 @@ const MyForm = props => {
     });
   }
 
-  function getWarehouse() {
-    axios.get(baseUrl + 'warehouse').then(function (responseArr) {
-      setWarehouseOptions(convertDataToDropdownData(responseArr.data))
+  function getParentItems() {
+    axios.get(baseUrl + '/items?isParent=1').then(function (responseArr) {
+      setBrandOptions(convertDataToDropdownData(responseArr.data))
       console.log('SUCCESS!!');
     })
     .catch(function (reason) {
@@ -170,17 +181,14 @@ const MyForm = props => {
   }
 
   function handleUpload(event) {
-
-  
+ 
     setFile(event.target.files[0]);  
-    console.log('handleUpload called')
   
     let formData = new FormData()
   
     formData.append('file', event.target.files[0]);
     formData.append('upload_preset','mfdq2wyh')
     formData.append('tag','myUpload')
-      console.log('>> formData >> ', formData);
   
       const url = `https://api.cloudinary.com/v1_1/doxjtszxv/image/upload`
   
@@ -190,7 +198,6 @@ const MyForm = props => {
       axios.post(url,
           formData,config
         ).then(function (response) {
-          console.log('SUCCESS!!');
           setImageUrl(response.data.url)
           setFieldValue('imageUrl', response.data.url)
         })
@@ -201,8 +208,9 @@ const MyForm = props => {
   }
   
   return (
+    <PageTitleContainer title='Add Item'>
     <Card className='add-item-container'>
-    <form  onSubmit={handleSubmit} >
+    <form  onSubmit={handleSubmit}>
         <div className="container__field-div">
           <InputLabel>
             Item Name:
@@ -228,11 +236,14 @@ const MyForm = props => {
           options={categoryOptions}
       />
         </div>
-        <div className="container__field-div">
-            <InputLabel>
+        <div className="container__field-div" >
+        <InputLabel>
               Upload Image:
             </InputLabel>
+        <div style={{display:'flex', alignItems:'center'}}>           
             <input multiple type="file" onChange={handleUpload}/>
+            {imageUrl != "" ? <img src={imageUrl} height='200px' width='200px'></img>:null}
+        </div>
         </div>
 
         <div className="container__field-div">
@@ -258,18 +269,6 @@ const MyForm = props => {
             onBlur={handleBlur}
             value={values.gstPercentage} />
           </div>   
-          <div className="container__field-div">
-        <InputLabel>
-          Cost price:
-        </InputLabel>
-        <InputText 
-            id="costPrice"
-            name="costPrice"
-            type='number'
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.costPrice} />
-        </div>
         <div className="container__field-div">
         <InputLabel>
           Brand:
@@ -282,57 +281,57 @@ const MyForm = props => {
           options={brandOptions}
       />
         </div>
-        <div className="container__field-div">
-          <InputLabel>
-            HSN code:
-          </InputLabel>
-          <InputText 
-            type="text" 
-            id="hsnCode"
-            name="hsnCode"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.hsnCode} />
-        </div>
-        <div className="container__field-div">
-          <InputLabel>
+        <div className="inline__container__div">
+          <label>
             Alias code:
-          </InputLabel>
-          <InputText 
+          </label>
+          <input 
+            className='inline_input'
             type="text" 
             id="aliasCode"
             name="aliasCode"
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.aliasCode} />
+            <label style={{paddingLeft:'10px'}}>
+            HSN code:
+          </label>
+          <input 
+            className='inline_input'
+            type="text" 
+            id="hsnCode"
+            name="hsnCode"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.hsnCode} />
+          <label className='inline_label' style={{paddingLeft:'10px'}}>
+            Copy Required:
+          </label>
+          <input 
+            className='inline_input'
+            type="number" 
+            id="numberOfCopy"
+            name="numberOfCopy"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.numberOfCopy} />
         </div>
         <div className="container__field-div">
           <InputLabel>
-            Warehouse:
+            Parent Item:
           </InputLabel>
           <RCreatable
-          name='warehouse'
+          name='parentItem'
           onChange={setFieldValue}
-          value = {values.warehouse}
+          value = {values.parentItemName}
           onBlur={setFieldTouched}
           options={warehouseOptions}
       />
-        </div>
-        <div className="container__field-div">
-          <InputLabel>
-            Quantity:
-          </InputLabel>
-          <InputText 
-            type="number" 
-            id="quantity"
-            name="quantity"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.quantity} />
-        </div>
+      </div>
         <CtaButton type="submit">{'ADD'}</CtaButton>
       </form>
       </Card>
+      </PageTitleContainer>
   );
 };
 
@@ -351,10 +350,35 @@ const validate = values => {
   return errors;
 };
 
-const AddItem = () => {
+const AddItem = (props) => {
+
+  let item = props.location.state
+
+  let initialValues =  item ? {
+    itemName: item.itemName,
+  description:item.description,
+  gstPercentage:item.gstPercent,
+  brand:{value:item.brand.brandId, label:item.brand.brandName},
+  hsnCode:9403,
+  aliasCode:'',
+  file: null,
+  parentItemName:'',
+  category: {value:item.category.categoryId, label:item.category.categoryName},
+  numberOfCopy:1,} : {
+    itemName: '',
+    description:'',
+    gstPercentage:18,
+    brand:{},
+    hsnCode:9403,
+    aliasCode:'',
+    file: null,
+    parentItemName:'',
+    category: {},
+    numberOfCopy:1,
+}
 
   return (
-    <MyEnhancedForm />
+    <MyEnhancedForm initialValues={initialValues}/>
   );
 };
 

@@ -11,6 +11,7 @@ import ItemView from './pages/ItemView';
 import 'semantic-ui-css/semantic.min.css'
 import InvoiceList from './pages/InvoicesList'
 import PurchaseOrder from './pages/PurchaseOrder';
+import AddStaff from './pages/AddStaff/AddStaff';
 
 function App() {
   return (
@@ -26,7 +27,8 @@ function App() {
         <Route path='/pdf' exact component={PdfInvoice} />
         <Route path='/itemView' exact component={ItemView} />
         <Route path='/invoiceList' exact component={InvoiceList} />
-        <Route path='/createPurchase' exact component={PurchaseOrder} />       
+        <Route path='/createPurchase' exact component={PurchaseOrder} /> 
+        <Route path='/addStaff' exact component={AddStaff} />       
         
       </Switch>
     </Router>

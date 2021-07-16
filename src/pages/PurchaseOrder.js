@@ -10,6 +10,9 @@ import { Dropdown } from "semantic-ui-react";
 import "../components/Icons.css";
 import AddItemModal from "./AddItemModel";
 import PopUp from "./Popup";
+import Card from "../components/Card/Card";
+import './PurchaseOrder.css'
+import PageTitleContainer from "../components/PageTitleContainer/PageTitleContainer";
 
 const StyledDiv = styled.div`
   margin-left: 40rem;
@@ -285,8 +288,8 @@ const companies = [
   { text: "Ideal Furniture", value: 4 },
 ];
 const fullWidthTextFieldStyle = {
-  margin: "1rem 0 1rem 20rem",
-  width: "1000px",
+  margin: "1rem 0 1rem 0rem",
+  width: "80%",
   height: "40px",
   border: "1px solid",
 };
@@ -351,7 +354,8 @@ function PurchaseOrder(props) {
   }
 
   return (
-    <div>
+    <PageTitleContainer title='Create Purchase Order'>
+    <Card className='purchase-container'>
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
@@ -359,15 +363,20 @@ function PurchaseOrder(props) {
       >
         {({ errors, values, touched, setValues }) => (
           <Form>
-            <div className="card m-3">
-              <div className="card-body border-bottom">
-                <div className="form-row">
-                  <div className="form-group">
+            <div>
+              <div style={{
+                        display: "flex",
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
+                      }}>
                     <label
                       style={{
-                        margin: "1rem 0 1rem 20rem",
-                        width: "1000px",
+                        display: 'flex',
+                        alignItems: 'center',
+                        margin: "1rem 1rem 1rem 0rem",
+                        width: "100px",
                         height: "40px",
+                        verticalAlign: 'middle'
                       }}
                     >
                       Select Company
@@ -383,8 +392,6 @@ function PurchaseOrder(props) {
                         onCompanyDropDownChange(values, setValues, data.value);
                       }}
                     />
-                  </div>
-                </div>
               </div>
 
               <div className="card-body border-bottom">
@@ -392,7 +399,7 @@ function PurchaseOrder(props) {
                   <div className="form-group">
                     <label
                       style={{
-                        margin: "1rem 0 1rem 20rem",
+                        margin: "1rem 0 1rem 0rem",
                         width: "100px",
                         height: "40px",
                       }}
@@ -412,19 +419,13 @@ function PurchaseOrder(props) {
                   </div>
                 </div>
               </div>
-              <div>
-                <label
-                  style={{
-                    margin: "1rem 0 1rem 20rem",
-                    width: "1000px",
-                    height: "40px",
-                  }}
-                >
+              <div className='purchase-form-group-container-div'>
+                <label className='gst-label'>
                   <Field
                     type="checkbox"
                     name="checked"
                     value="isGstApplicable"
-                    style={{ width: "20px", height: "20px" }}
+                    style={{ width: "20px", height: "20px", marginRight: '10px' }}
                   />
                   Is GST Applied
                 </label>
@@ -442,8 +443,8 @@ function PurchaseOrder(props) {
                           <h5
                             className="card-title"
                             style={{
-                              margin: "1rem 0 1rem 20rem",
-                              width: "1000px",
+                              margin: "1rem 0 1rem 0rem",
+                              width: "100%",
                               height: "40px",
                             }}
                           >
@@ -453,8 +454,9 @@ function PurchaseOrder(props) {
                             <div
                               className="form-group col-6"
                               style={{
-                                margin: "1rem 0 1rem 20rem",
-                                width: "1000px",
+                                display: 'flex',
+                                margin: "1rem 0 1rem 0rem",
+                                width: "100%",
                                 height: "40px",
                               }}
                             >
@@ -479,15 +481,13 @@ function PurchaseOrder(props) {
                                   defaultValue={item.itemName}
                                 />
                               </div>
-                              <div style={{ marginLeft: "40%", width: "100%" }}>
+                              <div style={{display:'flex', width: '50%'}}>
                                 <ErrorMessage
                                   name={`items.${i}.name`}
                                   component="div"
                                   className="invalid-feedback"
                                 />
-                                <label
-                                  style={{ margin: "0rem 1rem 0rem 1rem" }}
-                                >
+                                <label style={{display:'flex' , alignItems:'center', marginRight: '20px', marginLeft: '20px'}}>
                                   Quantity
                                 </label>
                                 <Field
@@ -524,9 +524,10 @@ function PurchaseOrder(props) {
                 }
               </FieldArray>
 
-              <StyledDiv
+              <div
                 style={{
                   width: "200px",
+                  marginBottom: '50px',
                   justifyContent: "left",
                   float: "right",
                 }}
@@ -539,12 +540,13 @@ function PurchaseOrder(props) {
                   <span className="icon icon-add bg-green ml-10"></span>
                   Add Line Item
                 </button>
-              </StyledDiv>
-              <StyledDiv
+              </div>
+              <div
                 style={{
-                  width: "200px",
-                  justifyContent: "left",
-                  float: "right",
+                  width: "100%",
+                  justifyContent: "center",
+                  marginBottom: '50px',
+                  display: 'flex',
                 }}
               >
                 <button
@@ -557,13 +559,13 @@ function PurchaseOrder(props) {
                   <span className="icon icon-add bg-green ml-10"></span>
                   Add New Item
                 </button>
-              </StyledDiv>
-              <StyledDiv
+              </div>
+              <div
                 style={{
-                  marginTop: "100px",
-                  height: "40px",
-                  display: "inline-block",
-                  width: "300px",
+                  marginTop: "50px",
+                  display: "flex",
+                  width: "100%",
+                  justifyContent: 'center',
                 }}
               >
                 <button
@@ -586,7 +588,7 @@ function PurchaseOrder(props) {
                 >
                   Reset
                 </button>
-              </StyledDiv>
+              </div>
             </div>
           </Form>
         )}
@@ -594,7 +596,8 @@ function PurchaseOrder(props) {
       {shouldShowPopup ? (
         <PopUp shouldShowPopup={shouldShowPopup} onClose={setShouldShowPopup} />
       ) : null}
-    </div>
+    </Card>
+    </PageTitleContainer>
   );
 }
 

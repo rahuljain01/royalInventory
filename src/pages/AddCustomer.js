@@ -2,54 +2,42 @@ import React from 'react';
 import styled from 'styled-components';
 import { useFormik } from 'formik';
 import FileUpload from '../components/FileUpload';
-//import {InputLabel,InputText,InputSelect } from '../components/Styles';
 import axios from 'axios'
+import Card from '../components/Card/Card';
+import CtaButton from '../components/CtaButton/CtaButton';
+import './AddCustomer.css'
+import { postCall } from '../helper/ApiHelper';
+import PageTitleContainer from '../components/PageTitleContainer/PageTitleContainer';
 
 const InputLabel = styled.label`
-  margin-left: 20rem;
-  margin-bottom: 2rem;
+  margin-top: 1rem;
+  display: block;
   font-size: 1rem;
-  height: 80px;
+  height: 20px;
   justify-content: flex-start;
 `;
 
 const InputText = styled.input`
-  margin-left: 20rem;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
+  margin-top: 0rem;
   font-size: 1rem;
+  border: 1px solid grey;
   height: 40px;
-  width:1000px;
+  width:100%;
   justify-content: flex-start;
 `;
 
 const InputTextArea = styled.textarea`
-  margin-left: 20rem;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
   font-size: 1rem;
   height: 80px;
-  width:1000px;
+  width:100%;
   justify-content: flex-start;
 `;
 
 const InputSelect = styled.select`
-  margin-left: 20rem;
   margin-bottom: 1rem;
-  margin-top: 1rem;
   font-size: 1rem;
   height: 40px;
-  width:1000px;
-  justify-content: flex-start;
-`;
-
-const SubmitButton = styled.button`
-  margin-left: 700px;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-  font-size: 1rem;
-  height: 40px;
-  width:80px;
+  width:100%;
   justify-content: flex-start;
 `;
 
@@ -66,10 +54,10 @@ const validate = values => {
   return errors;
 };
 
-const AddCustomer = (customer) => {
+const AddCustomer = (props) => {
 
   const formik = useFormik({
-    initialValues: customer ? customer: {
+    initialValues: props.customer ? props.customer: {
       customerName: '',
       phoneNumber:0,
       address:'',
@@ -77,19 +65,28 @@ const AddCustomer = (customer) => {
       gstNumber:'',
     },
     validate,
-    enableReinitialize:true,
+    enableReinitialize:false,
     onSubmit: values => {
+      postCall('customer', values).then((data) => {
+        console.log("successfully posted invoice");
+      })
+      .catch((reason) => {
+        console.log("failed in posting invoice");
+      });
       alert(JSON.stringify(values, null, 2));
     },
   });
 
+  const containerClass = props.isInvoice ? 'customer-invoice-container':'customer-container'
+
   return (
-    <form  onSubmit={formik.handleSubmit}>
+    <PageTitleContainer title='Add Customer'>
+    <Card className={containerClass}>
+    <form  onSubmit={(e) => { e.preventDefault(); formik.handleSubmit(e)}}>
         <div>
           <InputLabel>
             Customer Name:
           </InputLabel>
-          <br />
           <InputText 
             id="customerName"
             name="customerName"
@@ -97,13 +94,12 @@ const AddCustomer = (customer) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.customerName} />
-            {formik.errors.customerName ? <div>{formik.errors.customerName}</div> : null}
+            {formik.errors.customerName ? <div style={{color:'red'}}>{formik.errors.customerName}</div> : null}
         </div>
         <div>
           <InputLabel>
             Phone Number:
           </InputLabel>
-          <br />
           <InputText 
             id="phoneNumber"
             name="phoneNumber"
@@ -118,7 +114,6 @@ const AddCustomer = (customer) => {
           <InputLabel>
             Address:
           </InputLabel>
-          <br />
           <InputTextArea 
             id="address"
             name="address"
@@ -130,17 +125,19 @@ const AddCustomer = (customer) => {
           <InputLabel>
             GST no:
           </InputLabel>
-          <br />
           <InputText 
             id="gstNumber"
             name="gstNumber"
             type='text'
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.gstNumber} />
+            value={formik.values.gstNumber}
+            style={{marginBottom:'2rem'}} />
           </div>   
-        <SubmitButton type="submit">{'ADD'}</SubmitButton>
+        <CtaButton type="submit" onClick={() => {}}>{'ADD'}</CtaButton>
       </form>
+      </Card>
+      </PageTitleContainer>
   );
 };
 

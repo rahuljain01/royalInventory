@@ -9,13 +9,19 @@ import ItemListDropdown from "../components/ItemListDropdown";
 import { Dropdown } from "semantic-ui-react";
 import "../components/Icons.css";
 import { getCall, postCall } from "../helper/ApiHelper";
+import Card from "../components/Card/Card";
+import "./CreateInvoice.css";
+import CtaButton from "../components/CtaButton/CtaButton";
+import RCreatable from "../components/RCreatable";
+import PageTitleContainer from "../components/PageTitleContainer/PageTitleContainer";
 
 const StyledDiv = styled.div`
-  margin-left: 40rem;
   margin-bottom: 2rem;
   font-size: 1rem;
   height: 80px;
-  justify-content: flex-start;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 `;
 
 let items = [
@@ -278,7 +284,6 @@ let items = [
 ];
 
 const fullWidthTextFieldStyle = {
-  margin: "1rem 0rem 1rem 0rem",
   width: "100%",
   height: "40px",
   border: "1px solid",
@@ -308,7 +313,7 @@ function CreateInvoice(props) {
       }
     : {
         customerNumber: "",
-        items: [{ name: "", quantity: "", sellingPrice: "" }],
+        items: [{ name: "", quantity: "", sellingPrice: "", warehouseId: "" }],
         customer: {},
         deliveryDate: "",
         invoiceDate: "",
@@ -323,9 +328,11 @@ function CreateInvoice(props) {
 
   const [showCustomerFields, setshowCustomerFields] = useState(false);
 
+  const [warehouseDict, setWarehouseDict] = useState([]);
+
   function addItem(e, values, setValues) {
     const items = [...values.items];
-    items.push({ name: "", quantity: "", sellingPrice: "" });
+    items.push({ name: "", quantity: "", sellingPrice: "", warehouseId: "" });
 
     setValues({ ...values, items });
   }
@@ -363,9 +370,28 @@ function CreateInvoice(props) {
     history.push({ pathname: "/pdf", state: fields });
   }
 
-  function onDropDownChange(index, values, setValues, selectedItem) {
+  function getWarehouseForItem(name, index) {
+    getCall("warehouse", {'itemName':name}).then((data) => {
+      //setWarehouseDict(warehouseDict.push({'value':data[0].id , 'label':data[0].name}))
+      
+      setWarehouseDict(oldArray => [...oldArray, data.map( value => { return {'value':value.id ,'label':value.name}})])
+    }).catch((reason) => {
+      console.log("failed to get warehouse for index : "+  index);
+    })
+  }
+
+  function onItemDropDownChange(index, values, setValues, selectedItem) {
     const items = [...values.items];
     items[index].name = selectedItem;
+
+    setValues({ ...values, items });
+
+    getWarehouseForItem(selectedItem.itemName, index)
+  }
+
+  function onWarehouseDropDownChange(index, values, setValues, selectedWarehouse) {
+    const items = [...values.items];
+    items[index].warehouseId = selectedWarehouse;
 
     setValues({ ...values, items });
   }
@@ -378,32 +404,17 @@ function CreateInvoice(props) {
   }
 
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-      enableReinitialize={true}
-    >
-      {({ errors, values, touched, setValues }) => (
-        <Form>
-          <div
-            style={{
-              position: "fixed",
-              top: "30rem",
-              left: "50%",
-              /* bring your own prefixes */
-              transform: "translate(-50%, -50%)",
-            }}
-          >
+    <PageTitleContainer title='Create Invoice'>
+    <Card className="create-invoice-container">
+      <Formik
+        initialValues={initialValues}
+        onSubmit={(e) => { e.preventDefault(); onSubmit()}}
+        enableReinitialize={false}
+      >
+        {({ errors, values, touched, setValues }) => (
+          <Form>
             <div className="form-group">
-              <label
-                style={{
-                  margin: "1rem 0 1rem 20rem",
-                  width: "100%",
-                  height: "40px",
-                }}
-              >
-                Customer Number
-              </label>
+              <label>Customer Number</label>
               <Field
                 name="customerNumber"
                 type="text"
@@ -417,19 +428,11 @@ function CreateInvoice(props) {
               />
             </div>
 
-            <div>{showCustomerFields && <AddCustomer {...customer} />}</div>
-            <div className="card-body border-bottom">
-              <div className="form-row">
-                <div className="form-group">
-                  <label
-                    style={{
-                      margin: "1rem 0 1rem 20rem",
-                      width: "100px",
-                      height: "40px",
-                    }}
-                  >
-                    Invoice Date
-                  </label>
+            <div>{showCustomerFields && <AddCustomer customer={customer} isInvoice={true}/>}</div>
+            <div>
+              <div>
+                <div>
+                  <label>Invoice Date</label>
                   <Field
                     name="invoiceDate"
                     type="date"
@@ -442,7 +445,7 @@ function CreateInvoice(props) {
                   <br />
                   <label
                     style={{
-                      margin: "1rem 0 1rem 20rem",
+                      margin: "1rem 0 1rem 0rem",
                       width: "100px",
                       height: "40px",
                     }}
@@ -453,7 +456,7 @@ function CreateInvoice(props) {
                     name="deliveryDate"
                     type="date"
                     style={{
-                      margin: "1rem 0 1rem 1.4rem",
+                      margin: "0rem 0 1rem 1.4rem",
                       width: "300px",
                       height: "40px",
                     }}
@@ -464,7 +467,10 @@ function CreateInvoice(props) {
             <div>
               <label
                 style={{
-                  margin: "1rem 0 1rem 20rem",
+                  display: "flex",
+                  margin: "1rem 0 1rem 0rem",
+                  alignItems: "flex-start",
+                  justifyContent: "flex-start",
                   width: "30%",
                   height: "40px",
                 }}
@@ -473,7 +479,7 @@ function CreateInvoice(props) {
                   type="checkbox"
                   name="checked"
                   value="isGstApplicable"
-                  style={{ width: "20px", height: "20px" }}
+                  style={{ width: "20px", height: "20px", marginRight: "5px" }}
                 />
                 Is GST Applied
               </label>
@@ -486,92 +492,117 @@ function CreateInvoice(props) {
                   const ticketTouched =
                     (touched.items?.length && touched.items[i]) || {};
                   return (
-                    <div
-                      key={item.itemId}
-                      className="list-group list-group-flush"
-                    >
+                    <div key={item.itemId}>
                       <div className="list-group-item">
                         <h5
                           className="card-title"
                           style={{
-                            margin: "1rem 0 1rem 20rem",
-                            width: "1000px",
+                            margin: "1rem 0 1rem 0rem",
+                            width: "100%",
                             height: "40px",
                           }}
                         >
                           Item {i + 1}
                         </h5>
-                        <div className="form-row">
-                          <div
-                            className="form-group col-6"
-                            style={{
-                              margin: "1rem 0 1rem 20rem",
-                              width: "1000px",
-                              height: "40px",
-                            }}
-                          >
-                            <div style={{ width: "45%", float: "left" }}>
-                              <Dropdown
-                                name={`items.${i}.name`}
-                                placeholder="Select Item"
-                                fluid
-                                search
-                                selection
-                                options={ConvertItemsDataToDropdownData(items)}
+                        <div style={{
+                            width: "100%",
+                            display:'flex',
+                            
+                          }}>
+                        <div
+                          className="form-group col-6"
+                          style={{
+                            margin: "1rem 0 1rem 0rem",
+                            width: "90%",
+                            display:'flex',
+                            flexDirection:'column',
+                            
+                          }}
+                        >
+                          <div style={{ width: "100%",display:'flex'}}>
+                            <div style={{ width: "55%", float: "left" }}>
+                            <Dropdown
+                              name={`items.${i}.name`}
+                              placeholder="Select Item"
+                              fluid
+                              search
+                              selection
+                              options={ConvertItemsDataToDropdownData(items)}
+                              onChange={(event, data) => {
+                                onItemDropDownChange(
+                                  i,
+                                  values,
+                                  setValues,
+                                  data.value
+                                );
+                              }}
+                              defaultValue={item.itemName}
+                            />
+                            <ErrorMessage
+                              name={`items.${i}.name`}
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                            </div>
+                            <div style={{ width: "45%" }}>
+                            <label style={{ margin: "0rem 1rem 0rem 1rem", width:'30%' }}>
+                              Quantity
+                            </label>
+                            <Field
+                              name={`items.${i}.quantity`}
+                              type="text"
+                              style={{ height: "40px", width:'70%'  }}
+                            />
+                            <ErrorMessage
+                              name={`items.${i}.quantity`}
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                            </div>
+                          </div>
+                          <div style={{display:'flex', marginTop:'20px'}}>
+                            <div style={{width:'45%'}}>
+                            <label style={{width:'30%', marginRight:'10px'}}>
+                              Selling Price
+                            </label>
+                            <Field
+                              name={`items.${i}.sellingPrice`}
+                              type="number"
+                              style={{ height: "40px", width:'70%' }}
+                            />
+                            <ErrorMessage
+                              name={`items.${i}.sellingPrice`}
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                            </div>
+                            <div  style={{width:'55%', display:'flex', alignItems:'center'}}>
+                              <label  style={{width:'30%'}}>Warehouse:</label>
+                              <RCreatable
+                                name={`items.${i}.warehouseId`}
                                 onChange={(event, data) => {
-                                  onDropDownChange(
+                                  onWarehouseDropDownChange(
                                     i,
                                     values,
                                     setValues,
                                     data.value
                                   );
                                 }}
-                                defaultValue={item.itemName}
+                                onBlur={() => {}}
+                                options={warehouseDict[i]}
                               />
                             </div>
-                            <div style={{ marginLeft: "30%", width: "90%" }}>
-                              <ErrorMessage
-                                name={`items.${i}.name`}
-                                component="div"
-                                className="invalid-feedback"
-                              />
-                              <label style={{ margin: "0rem 1rem 0rem 1rem" }}>
-                                Quantity
-                              </label>
-                              <Field
-                                name={`items.${i}.quantity`}
-                                type="text"
-                                style={{ height: "40px" }}
-                              />
-                              <ErrorMessage
-                                name={`items.${i}.quantity`}
-                                component="div"
-                                className="invalid-feedback"
-                              />
-                              <label style={{ margin: "0rem 1rem 0rem 1rem" }}>
-                                Selling Price
-                              </label>
-                              <Field
-                                name={`items.${i}.sellingPrice`}
-                                type="number"
-                                style={{ height: "40px" }}
-                              />
-                              <ErrorMessage
-                                name={`items.${i}.sellingPrice`}
-                                component="div"
-                                className="invalid-feedback"
-                              />
-                              <button
-                                className="removeLink"
-                                type="button"
-                                onClick={(e) =>
-                                  removeItem(i, values, setValues)
-                                }
-                                style={{ margin: "0rem 1rem 0rem 1rem" }}
-                              >
-                                remove
-                              </button>
-                            </div>
+                          </div>
+                        </div>
+                        <div style={{width:'10%', display:'flex', justifyContent:'center',alignItems:'center'}}>
+                        <button
+                              className="removeLink"
+                              type="button"
+                              onClick={(e) => removeItem(i, values, setValues)}
+                              style={{ margin: "0rem 1rem 0rem 1rem" }}
+                            >
+                              remove
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -582,7 +613,11 @@ function CreateInvoice(props) {
             </FieldArray>
 
             <StyledDiv
-              style={{ width: "200px", justifyContent: "left", float: "right" }}
+              style={{
+                width: "200px",
+                justifyContent: "left",
+                float: "right",
+              }}
             >
               <button
                 className="link"
@@ -597,14 +632,14 @@ function CreateInvoice(props) {
             <div
               style={{
                 margin: "3rem 0 1rem 0rem",
-                width: "1000px",
+                width: "100%",
                 height: "40px",
               }}
             >
               <label
                 style={{
-                  margin: "1rem 0 1rem 20rem",
-                  width: "1000px",
+                  margin: "2rem 0 1rem 0rem",
+                  width: "100%",
                   height: "40px",
                 }}
               >
@@ -614,34 +649,22 @@ function CreateInvoice(props) {
                 name="remarks"
                 type="textarea"
                 style={{
-                  margin: "-2rem 0 1rem 20rem",
-                  width: "1000px",
+                  margin: "0rem 0 1rem 0rem",
+                  width: "100%",
                   height: "100px",
                 }}
               />
             </div>
             <StyledDiv
               style={{
-                marginTop: "100px",
+                justifyContent: "center",
+                marginTop: "150px",
                 height: "40px",
-                display: "inline-block",
-                width: "300px",
               }}
             >
-              <button
-                type="submit"
-                style={{
-                  height: "40px",
-                  backgroundColor: "#4CAF50",
-                  width: "140px",
-                  float: "left",
-                  color: "white",
-                  borderRadius: "4px",
-                  border: "0px",
-                }}
-              >
+              <CtaButton type="submit" style={{ width: "100px" }}>
                 {isEditing ? "Edit Invoice" : "Create Invoice"}
-              </button>
+              </CtaButton>
               <button
                 style={{ marginLeft: "50px", height: "40px", width: "80px" }}
                 type="reset"
@@ -649,10 +672,11 @@ function CreateInvoice(props) {
                 Reset
               </button>
             </StyledDiv>
-          </div>
-        </Form>
-      )}
-    </Formik>
+          </Form>
+        )}
+      </Formik>
+    </Card>
+    </PageTitleContainer>
   );
 }
 

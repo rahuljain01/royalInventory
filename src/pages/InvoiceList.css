@@ -1,8 +1,10 @@
 .invoice-container{
     width: 80%;
+    margin: 0px auto;
 }
 
 .search-container {
-    margin: auto;
-    width: 60%;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }

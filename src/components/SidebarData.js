@@ -35,7 +35,7 @@ export const SidebarData = [
     subNav: [
       {
         title: 'Items',
-        path: '/itemView',
+        path: '/addItem',
         icon: <IoIcons.IoIosPaper />,
         cName: 'sub-nav'
       },
@@ -54,17 +54,22 @@ export const SidebarData = [
         title: 'Purchase',
         path: '/createPurchase',
         icon: <IoIcons.IoIosPaper />
+      },
+      {
+        title: 'Staff',
+        path: '/addStaff',
+        icon: <IoIcons.IoIosPaper />
       }
     ]
   },
   {
     title: 'Products',
-    path: '/products',
+    path: '/itemView',
     icon: <FaIcons.FaCartPlus />
   },
   {
     title: 'Team',
-    path: '/team',
+    path: '/addStaff',
     icon: <IoIcons.IoMdPeople />
   },
   {

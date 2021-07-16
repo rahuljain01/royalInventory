@@ -1,0 +1,14 @@
+.purchase-container {
+    width: 80%;
+}
+
+.purchase-form-group-container-div {
+    display:flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.gst-label {
+    display: flex;
+    align-items: center;
+}

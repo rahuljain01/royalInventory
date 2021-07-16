@@ -13,10 +13,10 @@ class RCreatable extends React.Component {
       // this is going to call setFieldTouched and manually update touched.topcis
       this.props.onBlur(this.props.name, true);
     };
-  
+
     render() {
       return (
-        <div style={{ margin: 'auto'}}>
+        <div style={{ width: this.props.width ? this.props.width: '100%',margin: 'auto'}}>
           <Creatable
             id="color"
             options={this.props.options}

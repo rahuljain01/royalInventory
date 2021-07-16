@@ -1,0 +1,28 @@
+.staff-input {
+  margin-top: 0rem;
+  font-size: 1rem;
+  border: 1px solid grey;
+  height: 40px;
+  width:100%;
+  justify-content: flex-start;
+}
+
+
+.staff-text-area {
+    font-size: 1rem;
+  height: 80px;
+  width:100%;
+  justify-content: flex-start;
+  }
+
+  .staff-label {
+    margin-top: 1rem;
+    display: block;
+    font-size: 1rem;
+    height: 20px;
+    justify-content: flex-start;
+  }
+
+  .staff-container {
+      width: 60%;
+  }

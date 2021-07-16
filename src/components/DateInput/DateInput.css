@@ -1,0 +1,18 @@
+.date-input-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.date-input {
+    height: 40px;
+    width: 150px;
+    border: 1px solid gray;
+    color: gray;
+}
+
+.date-label {
+    margin-right: 8px;
+    margin-left: 4px;
+    font-size: medium;
+}

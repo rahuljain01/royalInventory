@@ -12,7 +12,7 @@ const Table = (props) => {
                 </tr>
             </thead>
             <tbody>
-                {body.map(row => <TableRow row={row} />)}
+                {body.map((row, index) => <TableRow row={row} index={index} onEditClick={props.onEditClick} onCancelClick={props.onCancelClick}/>)}
             </tbody>
         </table>
     );

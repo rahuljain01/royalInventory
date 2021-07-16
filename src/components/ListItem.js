@@ -8,7 +8,7 @@ const ListItem = (props) => {
   const orderDateText = 'Order dates: ' + orderDates.reduce((value,item) => value + ', ' + item, '')
 
   return (
-    <div className="pending-item">
+    <div className="pending-item" onClick={() => props.onClick(props.index)}>
       <Item.Image size="small" src={item.imageUrl} />
 
       <div className="item-info">
