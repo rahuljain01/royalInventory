@@ -7,6 +7,7 @@ import "../components/ListItem.css";
 import "./ItemView.css";
 import { useHistory } from "react-router-dom";
 import PageTitleContainer from "../components/PageTitleContainer/PageTitleContainer";
+import { config } from "../config/Config";
 
 const ItemView = () => {
   const [items, setItems] = useState([]);
@@ -16,8 +17,9 @@ const ItemView = () => {
   let history = useHistory();
 
   useEffect(() => {
+    
     axios
-      .get("https://api-manager-rf-inventory.azure-api.net/v1/api/Items")
+      .get(config.baseUrl + 'items')
       .then(function (responseArr) {
         console.log("SUCCESS!!");
         setItems(responseArr.data);

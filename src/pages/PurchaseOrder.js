@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
@@ -13,6 +13,9 @@ import PopUp from "./Popup";
 import Card from "../components/Card/Card";
 import './PurchaseOrder.css'
 import PageTitleContainer from "../components/PageTitleContainer/PageTitleContainer";
+import RCreatable from "../components/RCreatable";
+import { getCall } from "../helper/ApiHelper";
+import { config } from "../config/Config";
 
 const StyledDiv = styled.div`
   margin-left: 40rem;
@@ -21,265 +24,6 @@ const StyledDiv = styled.div`
   height: 80px;
   justify-content: flex-start;
 `;
-
-let items = [
-  {
-    itemName: "item1",
-    itemId: 1,
-    categoryId: "cat1",
-    categoryName: "Chair",
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand1",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl:
-      "https://res.cloudinary.com/doxjtszxv/image/upload/v1620122700/zj1sjjojjrvi7unamnz7.jpg",
-  },
-  {
-    itemName: "item2",
-    itemId: 2,
-    categoryId: "cat2",
-    categoryName: "Chair",
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand2",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl:
-      "https://res.cloudinary.com/doxjtszxv/image/upload/v1620070516/klaxao8dnwt4o3sv8k4a.jpg",
-  },
-  {
-    itemName: "item3",
-    itemId: 3,
-    categoryId: "cat3",
-    categoryName: "Chair",
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl:
-      "https://res.cloudinary.com/doxjtszxv/image/upload/v1620070426/koy8u8rguufyquu10e2x.jpg",
-  },
-  {
-    itemName: "item4",
-    itemId: 4,
-    categoryId: null,
-    categoryName: null,
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: null,
-    brandName: null,
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: null,
-    quantity: 3,
-    imageUrl:
-      "https://res.cloudinary.com/doxjtszxv/image/upload/v1619299004/b9ghw2weqr3oxhnhedav.jpg",
-  },
-  {
-    itemName: "item5",
-    itemId: 5,
-    categoryId: null,
-    categoryName: null,
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: null,
-    brandName: null,
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: null,
-    quantity: 3,
-    imageUrl: "imageUrl4",
-  },
-  {
-    itemName: "item6",
-    itemId: 6,
-    categoryId: null,
-    categoryName: null,
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "wh1",
-    quantity: 3,
-    imageUrl: "imageUrl4",
-  },
-  {
-    itemName: "item7",
-    itemId: 7,
-    categoryId: null,
-    categoryName: null,
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "item7",
-    itemId: 8,
-    categoryId: null,
-    categoryName: null,
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "item7",
-    itemId: 9,
-    categoryId: "cat3",
-    categoryName: "Chair",
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "item10",
-    itemId: 10,
-    categoryId: "cat3",
-    categoryName: "Chair",
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "item11",
-    itemId: 11,
-    categoryId: "cat3",
-    categoryName: "Chair",
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "sofa green corner",
-    itemId: 12,
-    categoryId: "",
-    categoryName: "sofa set",
-    description: "awesome sofa set",
-    gstPercent: 18,
-    costPrice: 35000,
-    sellingPrice: 0,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "9403",
-    aliasCode: "100000000001",
-    warehouseId: "",
-    quantity: 0,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "sofa green corner",
-    itemId: 13,
-    categoryId: "",
-    categoryName: "sofa set",
-    description: "awesome sofa set",
-    gstPercent: 18,
-    costPrice: 35000,
-    sellingPrice: 0,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "9403",
-    aliasCode: "100000000001",
-    warehouseId: "",
-    quantity: 0,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "New sofa green corner",
-    itemId: 14,
-    categoryId: "",
-    categoryName: "sofa set",
-    description: "awesome sofa green",
-    gstPercent: 18,
-    costPrice: 35000,
-    sellingPrice: 0,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "9403",
-    aliasCode: "100000000001",
-    warehouseId: "",
-    quantity: 0,
-    imageUrl: "imageUrl3",
-  },
-];
 
 const companies = [
   { text: "Kurl On", value: 1 },
@@ -306,10 +50,21 @@ function ConvertItemsDataToDropdownData(items) {
   return dropdownItem;
 }
 
+function ConvertWarehouseDataToDropdownData(warehouses) {
+  var dropdownItem = [];
+  warehouses.map((warehouse, i) => {
+    dropdownItem.push({
+      value: warehouse.storeId,
+      label: warehouse.address,
+    });
+  });
+  return dropdownItem;
+}
+
 function PurchaseOrder(props) {
   let initialValues = {
-    businessId: "",
-    items: [{ itemName: "", quantity: "" }],
+    vendorId: "",
+    purchaseItem: [{ itemName: "", quantity: "", storeId:"", costPrice:"" }],
     purchaseDate: "",
     taxPaid: 0,
   };
@@ -319,38 +74,79 @@ function PurchaseOrder(props) {
   let history = useHistory();
   let [shouldShowPopup, setShouldShowPopup] = useState(false);
 
-  function addItem(e, values, setValues) {
-    const items = [...values.items];
-    items.push({ itemName: "", quantity: "" });
+  const [warehouse, setWarehouse] = useState([]);
+  const [items, setItems] = useState([]);
 
-    setValues({ ...values, items });
+  useEffect(() => {
+    getItems()
+    getWarehouse()
+  }, []);
+
+  function addItem(e, values, setValues) {
+    const purchaseItem = [...values.purchaseItem];
+    purchaseItem.push({ itemName: "", quantity: "", storeId:"", costPrice:""  });
+
+    setValues({ ...values, purchaseItem });
   }
 
   function onSubmit(fields) {
     // display form field values on success
+    
+    let amount = fields.purchaseItem.reduce((accumulator, currentValue) => { return accumulator + (currentValue.costPrice * currentValue.quantity) }, 0);
+    console.log(amount)
+    fields["amount"] = amount
     alert(JSON.stringify(fields, null, 4));
-    alert(fields.customerNumber);
-    //history.push({pathname: '/pdf',state: fields})
+    
   }
 
-  function onDropDownChange(index, values, setValues, selectedItem) {
-    const items = [...values.items];
-    items[index].name = selectedItem;
+  function onItemDropDownChange(index, values, setValues, selectedItem) {
+    const purchaseItem = [...values.purchaseItem];
+    purchaseItem[index].itemName = selectedItem;
 
-    setValues({ ...values, items });
+    setValues({ ...values, purchaseItem });
+  }
+
+  function onWarehouseDropDownChange(index, values, setValues, selectedWarehouse) {
+    const purchaseItem = [...values.purchaseItem];
+    purchaseItem[index].storeId = selectedWarehouse;
+
+    setValues({ ...values, purchaseItem });
   }
 
   function onCompanyDropDownChange(values, setValues, selectedItem) {
-    const items = [...values.items];
+    let vendorId = values.vendorId;
 
-    setValues({ ...values, items });
+    vendorId = selectedItem
+    setValues({ ...values, vendorId });
+  }
+
+  const getItems = () => {
+    getCall('items').then(function (responseArr) {
+      setItems(responseArr)
+      console.log('SUCCESS!!');
+    })
+    .catch(function (reason) {
+      console.log('FAILURE!!');
+      alert(reason)
+    });
+  }
+
+  const getWarehouse = () => {
+    getCall('stores').then(function (responseArr) {
+      setWarehouse(responseArr)
+      console.log('SUCCESS!!');
+    })
+    .catch(function (reason) {
+      console.log('FAILURE!!');
+      alert(reason)
+    });
   }
 
   function removeItem(index, values, setValues) {
-    const items = [...values.items];
-    items.splice(index, 1);
+    const purchaseItem = [...values.purchaseItem];
+    purchaseItem.splice(index, 1);
 
-    setValues({ ...values, items });
+    setValues({ ...values, purchaseItem });
   }
 
   return (
@@ -382,7 +178,7 @@ function PurchaseOrder(props) {
                       Select Company
                     </label>
                     <Dropdown
-                      name="businessId"
+                      name="vendorId"
                       fluid
                       search
                       selection
@@ -432,7 +228,7 @@ function PurchaseOrder(props) {
               </div>
               <FieldArray name="items">
                 {() =>
-                  values.items.map((item, i) => {
+                  values.purchaseItem.map((item, i) => {
                     const ticketErrors =
                       (errors.items?.length && errors.items[i]) || {};
                     const ticketTouched =
@@ -450,73 +246,107 @@ function PurchaseOrder(props) {
                           >
                             Item {i + 1}
                           </h5>
-                          <div className="form-row">
-                            <div
-                              className="form-group col-6"
-                              style={{
-                                display: 'flex',
-                                margin: "1rem 0 1rem 0rem",
-                                width: "100%",
-                                height: "40px",
+                          <div style={{
+                            width: "100%",
+                            display:'flex',
+                            
+                          }}>
+                        <div
+                          className="form-group col-6"
+                          style={{
+                            margin: "1rem 0 1rem 0rem",
+                            width: "90%",
+                            display:'flex',
+                            flexDirection:'column',
+                            
+                          }}
+                        >
+                          <div style={{ width: "100%",display:'flex'}}>
+                            <div style={{ width: "55%", float: "left" }}>
+                            <Dropdown
+                              name={`purchaseItem.${i}.name`}
+                              placeholder="Select Item"
+                              fluid
+                              search
+                              selection
+                              options={ConvertItemsDataToDropdownData(items)}
+                              onChange={(event, data) => {
+                                onItemDropDownChange(
+                                  i,
+                                  values,
+                                  setValues,
+                                  data.value
+                                );
                               }}
-                            >
-                              <div style={{ width: "45%", float: "left" }}>
-                                <Dropdown
-                                  name={`items.${i}.name`}
-                                  placeholder="Select Item"
-                                  fluid
-                                  search
-                                  selection
-                                  options={ConvertItemsDataToDropdownData(
-                                    items
-                                  )}
-                                  onChange={(event, data) => {
-                                    onDropDownChange(
-                                      i,
-                                      values,
-                                      setValues,
-                                      data.value
-                                    );
-                                  }}
-                                  defaultValue={item.itemName}
-                                />
-                              </div>
-                              <div style={{display:'flex', width: '50%'}}>
-                                <ErrorMessage
-                                  name={`items.${i}.name`}
-                                  component="div"
-                                  className="invalid-feedback"
-                                />
-                                <label style={{display:'flex' , alignItems:'center', marginRight: '20px', marginLeft: '20px'}}>
-                                  Quantity
-                                </label>
-                                <Field
-                                  name={`items.${i}.quantity`}
-                                  type="number"
-                                  style={{
-                                    height: "40px",
-                                    width: "450px",
-                                    borderWidth: "1px solid",
-                                  }}
-                                />
-                                <ErrorMessage
-                                  name={`items.${i}.quantity`}
-                                  component="div"
-                                  className="invalid-feedback"
-                                />
-                                <button
-                                  className="removeLink"
-                                  type="button"
-                                  onClick={(e) =>
-                                    removeItem(i, values, setValues)
-                                  }
-                                  style={{ margin: "0rem 1rem 0rem 1rem" }}
-                                >
-                                  remove
-                                </button>
-                              </div>
+                              defaultValue={item.itemName}
+                            />
+                            <ErrorMessage
+                              name={`purchaseItem.${i}.name`}
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                            </div>
+                            <div style={{ width: "45%" }}>
+                            <label style={{ margin: "0rem 1rem 0rem 1rem", width:'30%' }}>
+                              Quantity
+                            </label>
+                            <Field
+                              name={`purchaseItem.${i}.quantity`}
+                              type="text"
+                              style={{ height: "40px", width:'70%'  }}
+                            />
+                            <ErrorMessage
+                              name={`purchaseItem.${i}.quantity`}
+                              component="div"
+                              className="invalid-feedback"
+                            />
                             </div>
                           </div>
+                          <div style={{display:'flex', marginTop:'20px'}}>
+                            <div style={{width:'45%'}}>
+                            <label style={{width:'30%', marginRight:'10px'}}>
+                              Cost Price
+                            </label>
+                            <Field
+                              name={`purchaseItem.${i}.costPrice`}
+                              type="number"
+                              style={{ height: "40px", width:'70%' }}
+                            />
+                            <ErrorMessage
+                              name={`purchaseItem.${i}.costPrice`}
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                            </div>
+                            <div  style={{width:'55%', display:'flex', alignItems:'center'}}>
+                              <label  style={{width:'30%'}}>Warehouse:</label>
+                              <RCreatable
+                                name={`items.${i}.storeId`}
+                                onChange={(event, data) => {
+                                  onWarehouseDropDownChange(
+                                    i,
+                                    values,
+                                    setValues,
+                                    data.value
+                                  );
+                                }}
+                                onBlur={() => {}}
+                                options={ConvertWarehouseDataToDropdownData(warehouse)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div style={{width:'10%', display:'flex', justifyContent:'center',alignItems:'center'}}>
+                        <button
+                              className="removeLink"
+                              type="button"
+                              onClick={(e) => removeItem(i, values, setValues)}
+                              style={{ margin: "0rem 1rem 0rem 1rem" }}
+                            >
+                              remove
+                            </button>
+                          </div>
+                        </div>
                         </div>
                       </div>
                     );

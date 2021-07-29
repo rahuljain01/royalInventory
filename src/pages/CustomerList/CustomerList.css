@@ -1,0 +1,10 @@
+.customer-search-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.customer-list-container {
+    width: 80%;
+    margin: 0px auto;
+}

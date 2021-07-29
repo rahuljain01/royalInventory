@@ -304,20 +304,24 @@ function ConvertItemsDataToDropdownData(items) {
 function CreateInvoice(props) {
   let initialValues = props.location.state
     ? {
+        invoiceNumber: props.location.state.invoiceNumber,
         customerNumber: props.location.state.customerId,
         items: props.location.state.items,
         customer: {},
         deliveryDate: props.location.state.deliveryDate,
         invoiceDate: props.location.state.bookingDate,
         isGstApplicable: false,
+        isFullyPaid:false,
       }
     : {
+        invoiceNumber: "",
         customerNumber: "",
         items: [{ name: "", quantity: "", sellingPrice: "", warehouseId: "" }],
         customer: {},
         deliveryDate: "",
         invoiceDate: "",
         isGstApplicable: false,
+        isFullyPaid:false,
       };
 
   let isEditing = props.location.state ? true : false;
@@ -337,10 +341,7 @@ function CreateInvoice(props) {
     setValues({ ...values, items });
   }
 
-  function onCustomerNumberEntry() {
-    axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.headers.common["Access-Control-Allow-Headers"] = "*";
-    axios.defaults.headers.common["Access-Control-Allow-Methods"] = "*";
+  function onCustomerNumberEntry() {   
 
     getCall("getCustomer/8008911176")
       .then((data) => {
@@ -360,6 +361,20 @@ function CreateInvoice(props) {
   }
   function onSubmit(fields) {
     // display form field values on success
+
+    let amount = fields.items.reduce((accumulator, currentValue) => { return accumulator + (currentValue.sellingPrice * currentValue.quantity) }, 0);
+
+    if (!fields['isFullyPaid']) {
+      amount = fields['partialPayment']
+    }
+    fields['salesTransaction'] = {
+      "transactionId": 0,
+      "orderId": 0,
+      "amountPaid": amount,
+    }
+
+    delete fields['partialPayment']
+    console.log(JSON.stringify(fields, null, 4))
     postCall("createInvoice", JSON.stringify(fields, null, 4))
       .then((data) => {
         console.log("successfully posted invoice");
@@ -403,16 +418,36 @@ function CreateInvoice(props) {
     setValues({ ...values, items });
   }
 
+  function isFullyPaidClicked(e , setValues , values) {
+    let isFullyPaid = values.isFullyPaid;
+    isFullyPaid = e.target.checked
+    setValues({ ...values, isFullyPaid });
+  }
+
   return (
     <PageTitleContainer title='Create Invoice'>
     <Card className="create-invoice-container">
       <Formik
         initialValues={initialValues}
-        onSubmit={(e) => { e.preventDefault(); onSubmit()}}
+        onSubmit={onSubmit}
         enableReinitialize={false}
       >
         {({ errors, values, touched, setValues }) => (
           <Form>
+            {initialValues.invoiceNumber != "" && <div className="form-group">
+              <label>Invoice Number</label>
+              <Field
+                name="invoiceNumber"
+                type="text"
+                style={fullWidthTextFieldStyle}
+                onBlur={() => {}}
+              ></Field>
+              <ErrorMessage
+                name="invoiceNumber"
+                component="div"
+                className="invalid-feedback"
+              />
+            </div>}
             <div className="form-group">
               <label>Customer Number</label>
               <Field
@@ -633,12 +668,11 @@ function CreateInvoice(props) {
               style={{
                 margin: "3rem 0 1rem 0rem",
                 width: "100%",
-                height: "40px",
               }}
             >
               <label
                 style={{
-                  margin: "2rem 0 1rem 0rem",
+                  margin: "2rem 0 0rem 0rem",
                   width: "100%",
                   height: "40px",
                 }}
@@ -655,14 +689,51 @@ function CreateInvoice(props) {
                 }}
               />
             </div>
+            <div >
+              <label>Payments</label>
+              <div style={{
+                  display: "flex",
+                  margin: "1rem 0 1rem 0rem",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  width: "100%",
+                }}>
+              <label
+                style={{
+                  display: "flex",
+                  margin: "1rem 0 1rem 0rem",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  width: "30%",
+                  height: "40px",
+                }}
+              >
+                <Field
+                  type="checkbox"
+                  name="checked"
+                  value="isFullyPaid"
+                  style={{ width: "20px", height: "20px", marginRight: "5px" }}
+                  onBlur={(e) => isFullyPaidClicked(e , setValues , values)}
+                />
+                Fully Paid
+              </label>
+              {!values.isFullyPaid && <><label>Partial Payment</label>
+              <Field
+                  name="partialPayment"
+                  type="number"
+                  style={{ height: "40px", width:'30%', marginLeft:'20px'  }}
+                  
+              /></>}
+              
+              </div>
+            </div>
             <StyledDiv
               style={{
                 justifyContent: "center",
-                marginTop: "150px",
                 height: "40px",
               }}
             >
-              <CtaButton type="submit" style={{ width: "100px" }}>
+              <CtaButton type="submit" style={{ width: "100px", margin: '0px' }}>
                 {isEditing ? "Edit Invoice" : "Create Invoice"}
               </CtaButton>
               <button

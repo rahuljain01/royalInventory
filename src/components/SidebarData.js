@@ -82,8 +82,8 @@ export const SidebarData = [
 
     subNav: [
       {
-        title: 'Message 1',
-        path: '/messages/message1',
+        title: 'Customer List',
+        path: '/customerList',
         icon: <IoIcons.IoIosPaper />
       },
       {

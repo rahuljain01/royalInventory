@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useFormik } from 'formik';
 import FileUpload from '../components/FileUpload';
@@ -6,8 +6,9 @@ import axios from 'axios'
 import Card from '../components/Card/Card';
 import CtaButton from '../components/CtaButton/CtaButton';
 import './AddCustomer.css'
-import { postCall } from '../helper/ApiHelper';
+import { postCall, putCall } from '../helper/ApiHelper';
 import PageTitleContainer from '../components/PageTitleContainer/PageTitleContainer';
+import { useState } from 'react';
 
 const InputLabel = styled.label`
   margin-top: 1rem;
@@ -56,24 +57,41 @@ const validate = values => {
 
 const AddCustomer = (props) => {
 
+  const [isEditing, setIsEditing] = useState(false)
+
+  useEffect(()=> {
+    props.location.state ? setIsEditing(true):setIsEditing(false)
+  }, [])
+
   const formik = useFormik({
-    initialValues: props.customer ? props.customer: {
+    initialValues: props.location.state ? props.location.state: {
       customerName: '',
-      phoneNumber:0,
+      phone:0,
       address:'',
-      emailAddress:'',
+      email:'',
       gstNumber:'',
     },
     validate,
     enableReinitialize:false,
     onSubmit: values => {
-      postCall('customer', values).then((data) => {
+      if (isEditing) {
+        putCall('customers', values).then((data) => {
+          console.log("successfully posted invoice");
+        })
+        .catch((reason) => {
+          console.log("failed in posting invoice");
+        });
+        alert(JSON.stringify(values, null, 2));
+      } else {
+      values['customerId'] = '1'
+      postCall('customers', values).then((data) => {
         console.log("successfully posted invoice");
       })
       .catch((reason) => {
         console.log("failed in posting invoice");
       });
       alert(JSON.stringify(values, null, 2));
+    }
     },
   });
 
@@ -101,13 +119,13 @@ const AddCustomer = (props) => {
             Phone Number:
           </InputLabel>
           <InputText 
-            id="phoneNumber"
-            name="phoneNumber"
+            id="phone"
+            name="phone"
             type="number"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.phoneNumber} />
-            {formik.errors.phoneNumber ? <div>{formik.errors.phoneNumber}</div> : null}
+            value={formik.values.phone} />
+            {formik.errors.phone ? <div>{formik.errors.phone}</div> : null}
         </div>
 
         <div>
@@ -126,15 +144,15 @@ const AddCustomer = (props) => {
             GST no:
           </InputLabel>
           <InputText 
-            id="gstNumber"
-            name="gstNumber"
+            id="email"
+            name="email"
             type='text'
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.gstNumber}
+            value={formik.values.email}
             style={{marginBottom:'2rem'}} />
           </div>   
-        <CtaButton type="submit" onClick={() => {}}>{'ADD'}</CtaButton>
+        <CtaButton type="submit" onClick={() => {}}>{isEditing ? 'EDIT':'ADD'}</CtaButton>
       </form>
       </Card>
       </PageTitleContainer>

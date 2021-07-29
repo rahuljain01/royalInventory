@@ -42,50 +42,45 @@ const InputTextArea = styled.textarea`
 `;
 
 
-const baseUrl = 'https://api-manager-rf-inventory.azure-api.net/v1/api/'
+const baseUrl = 'https://royalfurniture.azurewebsites.net/api/'
 
 const formikEnhancer = withFormik({
   mapPropsToValues: props => ({
       itemName: props.initialValues.itemName,
       description:props.initialValues.description,
-      gstPercentage:props.initialValues.gstPercentage,
+      gstpercent:props.initialValues.gstpercent,
       brand:props.initialValues.brand,
       hsnCode:props.initialValues.hsnCode,
       aliasCode:props.initialValues.aliasCode,
       file: null,
       parentItemName:'',
       category: props.initialValues.category,
-      numberOfCopy:1,
+      numberOfCopy:props.initialValues.numberOfCopy,
   }),
   handleSubmit: (values, { setSubmitting }) => {
     const payload = {
       ...values
     };
     console.log(payload)
-    axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
-        axios.defaults.headers.common['Access-Control-Allow-Headers'] = '*'
-        axios.defaults.headers.common['Access-Control-Allow-Methods'] = '*'
-        const customHeaders = {
-          'content-type': 'application/json',
-        };
 
       var bodyDict = {
         itemName:values.itemName,
         isParent:1,
-        parentItemName:values.itemName,
-        numberOfCopy: 0,
+        parentItemName:'',
+        numberOfCopy: values.numberOfCopy,
         description:values.description,
-        gstpercent:values.gstPercentage,
+        gstpercent:values.gstpercent,
         hsncode:values.hsnCode,
         aliasCode:values.aliasCode,
         imageUrl:values.imageUrl,
       }
 
-      let isBrandCreated = !Number.isInteger(values.brand.value)
-      let isCategoryCreated = !Number.isInteger(values.category.value)
+      let isBrandCreated = !Number.isInteger(parseInt(values.brand.value))
+      let isCategoryCreated = !Number.isInteger(parseInt(values.category.value))
 
       if (isBrandCreated) {
         bodyDict['brand'] = {
+          brandId:'0',
           brandName: values.brand.value
         }
       } else {
@@ -94,13 +89,14 @@ const formikEnhancer = withFormik({
 
       if (isCategoryCreated) {
         bodyDict['category'] = {
-          brandName: values.category.value
+          categoryId:'0',
+          categoryName: values.category.value
         }
       } else {
         bodyDict['categoryId'] = values.category.value
       }
 
-    axios.post(baseUrl + 'Items', bodyDict, customHeaders).then(function (responseArr) {
+    axios.post(baseUrl + 'Items', bodyDict).then(function (responseArr) {
             console.log('SUCCESS!!');
           })
           .catch(function (reason) {
@@ -140,7 +136,7 @@ const MyForm = props => {
 
   function getCategories() {
     axios.get(baseUrl + 'categories').then(function (responseArr) {
-      setCategoryOptions(convertDataToDropdownData(responseArr.data))
+      setCategoryOptions(convertCategoryDataToDropdownData(responseArr.data))
       console.log('SUCCESS!!');
     })
     .catch(function (reason) {
@@ -151,7 +147,7 @@ const MyForm = props => {
 
   function getBrands() {
     axios.get(baseUrl + 'brands').then(function (responseArr) {
-      setBrandOptions(convertDataToDropdownData(responseArr.data))
+      setBrandOptions(convertBrandDataToDropdownData(responseArr.data))
       console.log('SUCCESS!!');
     })
     .catch(function (reason) {
@@ -162,7 +158,7 @@ const MyForm = props => {
 
   function getParentItems() {
     axios.get(baseUrl + '/items?isParent=1').then(function (responseArr) {
-      setBrandOptions(convertDataToDropdownData(responseArr.data))
+      //setBrandOptions(convertDataToDropdownData(responseArr.data))
       console.log('SUCCESS!!');
     })
     .catch(function (reason) {
@@ -171,10 +167,19 @@ const MyForm = props => {
     });
   }
 
-  function convertDataToDropdownData(data) {
+  function convertBrandDataToDropdownData(data) {
     let dropdownData = []
     data.map((node, index) => {
-      dropdownData.push({'value':node.id , 'label':node.name})
+      dropdownData.push({'value':node.brandId , 'label':node.brandName})
+    })
+
+    return dropdownData
+  }
+
+  function convertCategoryDataToDropdownData(data) {
+    let dropdownData = []
+    data.map((node, index) => {
+      dropdownData.push({'value':node.categoryId , 'label':node.categoryName})
     })
 
     return dropdownData
@@ -262,12 +267,12 @@ const MyForm = props => {
             GST percentage:
           </InputLabel>
           <InputText 
-            id="gstPercentage"
-            name="gstPercentage"
+            id="gstpercent"
+            name="gstpercent"
             type='text'
             onChange={handleChange}
             onBlur={handleBlur}
-            value={values.gstPercentage} />
+            value={values.gstpercent} />
           </div>   
         <div className="container__field-div">
         <InputLabel>
@@ -357,17 +362,17 @@ const AddItem = (props) => {
   let initialValues =  item ? {
     itemName: item.itemName,
   description:item.description,
-  gstPercentage:item.gstPercent,
+  gstpercent:item.gstpercent,
   brand:{value:item.brand.brandId, label:item.brand.brandName},
   hsnCode:9403,
-  aliasCode:'',
+  aliasCode:item.aliasCode,
   file: null,
   parentItemName:'',
   category: {value:item.category.categoryId, label:item.category.categoryName},
-  numberOfCopy:1,} : {
+  numberOfCopy:item.numberOfCopy,} : {
     itemName: '',
     description:'',
-    gstPercentage:18,
+    gstpercent:18,
     brand:{},
     hsnCode:9403,
     aliasCode:'',

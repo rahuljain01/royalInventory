@@ -13,7 +13,7 @@ import PageTitleContainer from "../components/PageTitleContainer/PageTitleContai
 let invoiceList = [
   {
     OrderId: "1",
-    invoiceId: "1",
+    invoiceNumber: "1",
     customerId: "8126767579",
     customerName: "Rahul Jain",
     amount: 5000,
@@ -47,7 +47,7 @@ let invoiceList = [
   },
   {
     OrderId: "1",
-    invoiceId: "2",
+    invoiceNumber: "2",
     customerId: "8126767579",
     customerName: "Arpit jain",
     amount: 5000,
@@ -81,7 +81,7 @@ let invoiceList = [
   },
   {
     OrderId: "1",
-    invoiceId: "3",
+    invoiceNumber: "3",
     customerId: "8126767579",
     customerName: "Priyanka Jain",
     amount: 5000,
@@ -171,7 +171,7 @@ const InvoiceList = () => {
   }
 
   const invoiceData = invoices.map( (invoice) => (
-    [invoice.invoiceId, invoice.customerName, invoice.amount, convertDateToDisplayFormat(invoice.bookingDate), convertDateToDisplayFormat(invoice.deliveryDate)]
+    [invoice.invoiceNumber, invoice.customerName, invoice.amount, convertDateToDisplayFormat(invoice.bookingDate), convertDateToDisplayFormat(invoice.deliveryDate)]
   ))
 
   const compareDate = (firstDate, secondDate) => {

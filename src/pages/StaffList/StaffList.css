@@ -1,0 +1,10 @@
+.staff-search-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.staff-list-container {
+    width: 80%;
+    margin: 0px auto;
+}

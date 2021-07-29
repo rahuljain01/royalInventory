@@ -53,6 +53,26 @@ const PdfInvoice = (props) => {
     return amount.toFixed(2);
   };
 
+  const calculateTotal = () => {
+    let totalAmount = formFields.items.reduce((accumulator, currentValue) => { return (parseFloat(currentValue.sellingPrice) * parseFloat(currentValue.quantity) + accumulator)}, 0)
+    return totalAmount.toFixed(2)
+  }
+
+  const calculateSubtotal = () => {
+    let totalAmount = calculateTotal()
+    return (totalAmount/1.18).toFixed(2)
+  }
+
+  const calculateGST = () => {
+    let totalAmount = calculateTotal()
+    return (totalAmount * 0.18).toFixed(2)
+  }
+
+  const convertDateToDisplayFormat = (date) => {
+    let givenDate = new Date(date)
+    return givenDate.toLocaleDateString("en-US")
+  }
+
   return (
     <PDFViewer width="1000px" height="600px">
       <Document>
@@ -133,7 +153,7 @@ const PdfInvoice = (props) => {
                   <Text>{"Invoice Date"}</Text>
                 </View>
                 <View style={{ width: "60%" }}>
-                  <Text>{"30 Jun 2020"}</Text>
+                  <Text>{convertDateToDisplayFormat(formFields.invoiceDate)}</Text>
                 </View>
               </View>
               <View
@@ -148,7 +168,7 @@ const PdfInvoice = (props) => {
                   <Text>{"Delivery Date"}</Text>
                 </View>
                 <View style={{ width: "60%" }}>
-                  <Text>{"30 Jun 2020"}</Text>
+                  <Text>{convertDateToDisplayFormat(formFields.deliveryDate)}</Text>
                 </View>
               </View>
             </View>
@@ -291,7 +311,7 @@ const PdfInvoice = (props) => {
                       textAlign: "right",
                     }}
                   >
-                    {"20000"}
+                    {calculateSubtotal()}
                   </Text>
                 </View>
               </View>
@@ -313,7 +333,7 @@ const PdfInvoice = (props) => {
                       textAlign: "right",
                     }}
                   >
-                    {"200"}
+                    {calculateGST()}
                   </Text>
                 </View>
               </View>
@@ -337,7 +357,7 @@ const PdfInvoice = (props) => {
                       textAlign: "right",
                     }}
                   >
-                    {"20200"}
+                    {calculateTotal()}
                   </Text>
                 </View>
               </View>
@@ -348,7 +368,7 @@ const PdfInvoice = (props) => {
             <Text style={{ width: "100%", fontWeight: "bold" }}>
               {"Remarks"}
             </Text>
-            <Text style={{ width: "100%" }}>{"Paid through card"}</Text>
+            <Text style={{ width: "100%" }}>{formFields.remarks}</Text>
           </View>
           <View style={{ marginTop: "20px" }}>
             <Text style={{ width: "100%", fontWeight: "bold" }}>{"Terms"}</Text>
