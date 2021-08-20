@@ -1,0 +1,10 @@
+.category-search-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.category-list-container {
+    width: 50%;
+    margin: 0px auto;
+}

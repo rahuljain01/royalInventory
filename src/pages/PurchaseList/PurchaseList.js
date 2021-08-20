@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import Card from "../components/Card/Card";
-import FilterButton from "../components/FilterButton/FilterButton";
-import Table from "../components/Table/Table";
-import "./InvoiceList.css";
-import DateInput from '../components/DateInput/DateInput'
-import LinkButton from "../components/Button/LinkButton/LinkButton";
-import PageTitleContainer from "../components/PageTitleContainer/PageTitleContainer";
-import { getCall } from "../helper/ApiHelper";
+import Card from "../../components/Card/Card";
+import FilterButton from "../../components/FilterButton/FilterButton";
+import Table from "../../components/Table/Table";
+import "./PurchaseList.css";
+import DateInput from '../../components/DateInput/DateInput'
+import LinkButton from "../../components/Button/LinkButton/LinkButton";
+import PageTitleContainer from "../../components/PageTitleContainer/PageTitleContainer";
+import { getCall } from "../../helper/ApiHelper";
 
-var heading = ['Invoice Id', 'Name', 'Amount', 'Invoice Date', 'Delivery Date'];
+var heading = ['Purchase Id', 'Business Name', 'Amount', 'Purchase Date'];
 
-const InvoicesList = () => {
-  const [invoices, setInvoices] = useState([]);
-  const [filteredInvoices, setFilteredInvoices] = useState([]);
+const PurchaseList = () => {
+  const [purchase, setPurchase] = useState([]);
+  const [filteredPurchase, setFilteredPurchase] = useState([]);
   const [isTodaySelected, setIsTodaySelected] = useState(false)
   const [isYesterdaySelected, setIsYesterdaySelected] = useState(false)
 
@@ -23,46 +23,45 @@ const InvoicesList = () => {
   var filterToDate
 
   useEffect(() => {
-
-    getCall('orders')
-      .then(function (responseArr) {
+    getCall('purchases').then(function (responseArr) {
         console.log("SUCCESS!!");
-        setInvoices(responseArr);
-        setFilteredInvoices(responseArr);
+        setPurchase(responseArr);
+        setFilteredPurchase(responseArr)
       })
       .catch(function (reason) {
-        setInvoices(invoices);
         console.log("FAILURE!!");
         alert(reason);
       });
   }, []);
 
   const onEditClick = (index) => {
-    history.push({ pathname: "/createInvoice", state: invoices[index] });
+    history.push({ pathname: "/createPurchase", state: purchase[index] });
     console.log('edit clicked for index: ' + index)
   }
   const onCancelClick = (index) => {
 
   }
 
-  function checkMatchesIninvoices(item, value) {
+  function checkMatchesInInvoiceList(item, value) {
     var ifTrue = false;
     Object.keys(item).forEach((key) => {
-      if (
-        item[key].toString().toLowerCase().indexOf(value.toLowerCase()) > -1
-      ) {
-        ifTrue = true;
-      }
+        if (item[key] != null) {
+            if (               
+              item[key].toString().toLowerCase().indexOf(value.toLowerCase()) > -1
+            ) {
+              ifTrue = true;
+            }
+          }
     });
 
     return ifTrue;
   }
 
   const handleSearchChange = (event) => {
-    var filteredList = invoices.filter(function (item) {
-      return checkMatchesIninvoices(item, event.target.value);
+    var filteredList = purchase.filter(function (item) {
+      return checkMatchesInInvoiceList(item, event.target.value);
     });
-    setFilteredInvoices(filteredList);
+    setFilteredPurchase(filteredList);
   };
 
   const convertDateToDisplayFormat = (date) => {
@@ -70,8 +69,8 @@ const InvoicesList = () => {
     return givenDate.toLocaleDateString("en-US")
   }
 
-  const invoiceData = invoices.map( (invoice) => (
-    [invoice.invoiceNumber, invoice.customerName, invoice.amount, convertDateToDisplayFormat(invoice.bookingDate), convertDateToDisplayFormat(invoice.deliveryDate)]
+  const purchaseData = filteredPurchase.map( (purchaseObject) => (
+    [purchaseObject.purchaseId, purchaseObject.vendor.vendorName, purchaseObject.amount, convertDateToDisplayFormat(purchaseObject.purchaseDate)]
   ))
 
   const compareDate = (firstDate, secondDate) => {
@@ -94,26 +93,26 @@ const InvoicesList = () => {
     filterToDate = event.target.value
     console.log('to date selected')
     if (filterFromDate != null) {
-      var filteredList = invoices.filter(function (item) {
+      var filteredList = purchaseData.filter(function (item) {
         return checkBetweenDateRange(new Date(filterToDate),new Date(filterFromDate), new Date(item.bookingDate));
       });
-      setFilteredInvoices(filteredList);
+      setFilteredPurchase(filteredList);
     }
   }
 
   const onTodayClick = () => {
-    var filteredList = invoices.filter(function (item) {
+    var filteredList = purchase.filter(function (item) {
       let todayDate = new Date()
       let bookingDate = new Date(item.bookingDate)
       return compareDate(todayDate, bookingDate);
     });
     setIsTodaySelected(true)
     setIsYesterdaySelected(false)
-    setFilteredInvoices(filteredList);
+    setFilteredPurchase(filteredList);
   }
 
   const onYesterdayClick = () => {
-    var filteredList = invoices.filter(function (item) {
+    var filteredList = purchase.filter(function (item) {
       let todayDate = new Date()
       todayDate.setDate(todayDate.getDate() - 1)
       let bookingDate = new Date(item.bookingDate)
@@ -121,17 +120,17 @@ const InvoicesList = () => {
     });
     setIsTodaySelected(false)
     setIsYesterdaySelected(true)
-    setFilteredInvoices(filteredList);
+    setFilteredPurchase(filteredList);
   }
 
   const onClearFilterClick = () => {
     setIsTodaySelected(false)
     setIsYesterdaySelected(false)
-    setInvoices(invoices)
+    setPurchase(purchase)
   }
 
   return (
-    <PageTitleContainer title="Invoice List">
+    <PageTitleContainer title="Purchase List">
 
       <div className='search-container'>
         <input
@@ -164,17 +163,11 @@ const InvoicesList = () => {
                               Clear filter
                             </LinkButton>
         </div>
-      <Card className="invoice-container">
-        <Table heading={heading} body={invoiceData} onEditClick={onEditClick} onCancelClick={onCancelClick}/>
+      <Card className="purchase-list-container">
+        <Table heading={heading} body={purchaseData} onEditClick={onEditClick} onCancelClick={onCancelClick}/>
       </Card>
-
-      {/* <Card className="invoice-container">
-        {invoiceData.map((invoice, index) => (
-          <InvoiceItem onClick={() => handleClick(index)} invoice={invoice} />
-        ))}
-      </Card> */}
     </PageTitleContainer>
   );
 };
 
-export default InvoicesList;
+export default PurchaseList;

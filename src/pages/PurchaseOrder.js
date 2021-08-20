@@ -14,7 +14,7 @@ import Card from "../components/Card/Card";
 import './PurchaseOrder.css'
 import PageTitleContainer from "../components/PageTitleContainer/PageTitleContainer";
 import RCreatable from "../components/RCreatable";
-import { getCall } from "../helper/ApiHelper";
+import { getCall, postCall } from "../helper/ApiHelper";
 import { config } from "../config/Config";
 
 const StyledDiv = styled.div`
@@ -61,11 +61,36 @@ function ConvertWarehouseDataToDropdownData(warehouses) {
   return dropdownItem;
 }
 
+function ConvertVendorsDataToDropdownData(vendors) {
+  var dropdownItem = [];
+  vendors.map((vendor, i) => {
+    dropdownItem.push({
+      value: vendor.vendorId,
+      text: vendor.vendorName,
+    });
+  });
+  return dropdownItem;
+}
+
+const ConvertDateToDisplayFormat = (date) => {
+  let givenDate = new Date(date)
+  return givenDate.toISOString().substr(0, 10);
+}
+
 function PurchaseOrder(props) {
-  let initialValues = {
+  let initialValues = props.location.state ? {
+    vendorId: props.location.state.vendorId,
+    vendor:props.location.state.vendor,
+    purchaseItem: props.location.state.purchaseItem,
+    purchaseDate: ConvertDateToDisplayFormat(props.location.state.purchaseDate),
+    isGstApplicable: props.location.state.isGst,
+    taxPaid: 1000,
+  }:{
     vendorId: "",
+    vendor:{},
     purchaseItem: [{ itemName: "", quantity: "", storeId:"", costPrice:"" }],
     purchaseDate: "",
+    isGstApplicable: 1,
     taxPaid: 0,
   };
 
@@ -76,10 +101,12 @@ function PurchaseOrder(props) {
 
   const [warehouse, setWarehouse] = useState([]);
   const [items, setItems] = useState([]);
+  const [vendors, setVendors] = useState([]);
 
   useEffect(() => {
     getItems()
     getWarehouse()
+    getVendors()
   }, []);
 
   function addItem(e, values, setValues) {
@@ -89,6 +116,8 @@ function PurchaseOrder(props) {
     setValues({ ...values, purchaseItem });
   }
 
+
+
   function onSubmit(fields) {
     // display form field values on success
     
@@ -96,6 +125,22 @@ function PurchaseOrder(props) {
     console.log(amount)
     fields["amount"] = amount
     alert(JSON.stringify(fields, null, 4));
+
+      if (fields['isGstApplicable']) {
+        fields["isGst"] = 1
+      } else {
+        fields["isGst"] = 0
+      }
+
+    delete fields['vendor']
+
+    postCall('purchases', fields).then(function (responseArr) {
+      console.log('SUCCESS!!');
+    })
+    .catch(function (reason) {
+      console.log('FAILURE!!');
+      alert(reason)
+    });
     
   }
 
@@ -131,6 +176,17 @@ function PurchaseOrder(props) {
     });
   }
 
+  const getVendors = () => {
+    getCall('vendors').then(function (responseArr) {
+      setVendors(responseArr)
+      console.log('SUCCESS!!');
+    })
+    .catch(function (reason) {
+      console.log('FAILURE!!');
+      alert(reason)
+    });
+  }
+
   const getWarehouse = () => {
     getCall('stores').then(function (responseArr) {
       setWarehouse(responseArr)
@@ -157,7 +213,7 @@ function PurchaseOrder(props) {
         onSubmit={onSubmit}
         enableReinitialize={true}
       >
-        {({ errors, values, touched, setValues }) => (
+        {({ errors, values, touched, setValues, setFieldValue }) => (
           <Form>
             <div>
               <div style={{
@@ -182,11 +238,12 @@ function PurchaseOrder(props) {
                       fluid
                       search
                       selection
-                      options={companies}
+                      options={ConvertVendorsDataToDropdownData(vendors)}
                       style={fullWidthTextFieldStyle}
                       onChange={(event, data) => {
                         onCompanyDropDownChange(values, setValues, data.value);
                       }}
+                      defaultValue={{value:values.vendor.vendorId, text:values.vendor.vendorName}}
                     />
               </div>
 
@@ -200,11 +257,11 @@ function PurchaseOrder(props) {
                         height: "40px",
                       }}
                     >
-                      Invoice Date
+                      Purchase Date
                     </label>
                     <Field
-                      name="invoiceDate"
-                      type="text"
+                      name="purchaseDate"
+                      type="date"
                       style={{
                         margin: "1rem 0 1rem 2rem",
                         width: "300px",
@@ -221,7 +278,11 @@ function PurchaseOrder(props) {
                     type="checkbox"
                     name="checked"
                     value="isGstApplicable"
+                    checked={values.isGstApplicable == 1}
                     style={{ width: "20px", height: "20px", marginRight: '10px' }}
+                    onChange={event =>
+                      setFieldValue("isGstApplicable", !values.isGstApplicable)
+                    }
                   />
                   Is GST Applied
                 </label>
@@ -332,6 +393,7 @@ function PurchaseOrder(props) {
                                 }}
                                 onBlur={() => {}}
                                 options={ConvertWarehouseDataToDropdownData(warehouse)}
+                                defaultValue={isEditing ? [{label: item.store.address, value: item.storeId}]:null}
                               />
                             </div>
                           </div>

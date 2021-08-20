@@ -54,18 +54,27 @@ const PdfInvoice = (props) => {
   };
 
   const calculateTotal = () => {
-    let totalAmount = formFields.items.reduce((accumulator, currentValue) => { return (parseFloat(currentValue.sellingPrice) * parseFloat(currentValue.quantity) + accumulator)}, 0)
+    let totalAmount = formFields.orderItems.reduce((accumulator, currentValue) => { return (parseFloat(currentValue.sellingPrice) * parseFloat(currentValue.quantity) + accumulator)}, 0)
     return totalAmount.toFixed(2)
   }
 
   const calculateSubtotal = () => {
     let totalAmount = calculateTotal()
-    return (totalAmount/1.18).toFixed(2)
+    if (formFields.isGST) {
+      return (totalAmount/1.18).toFixed(2)
+    } else {
+      return totalAmount
+    }
   }
 
   const calculateGST = () => {
     let totalAmount = calculateTotal()
-    return (totalAmount * 0.18).toFixed(2)
+    if (formFields.isGST) {
+      return (totalAmount * 0.18).toFixed(2)
+    } else {
+      return 0.0
+    }
+    
   }
 
   const convertDateToDisplayFormat = (date) => {
@@ -153,7 +162,7 @@ const PdfInvoice = (props) => {
                   <Text>{"Invoice Date"}</Text>
                 </View>
                 <View style={{ width: "60%" }}>
-                  <Text>{convertDateToDisplayFormat(formFields.invoiceDate)}</Text>
+                  <Text>{convertDateToDisplayFormat(formFields.bookingDate)}</Text>
                 </View>
               </View>
               <View
@@ -223,7 +232,7 @@ const PdfInvoice = (props) => {
             </View>
           </View>
 
-          {formFields.items.map((productLine, i) => {
+          {formFields.orderItems.map((productLine, i) => {
             return (
               <View
                 key={i}
@@ -326,7 +335,7 @@ const PdfInvoice = (props) => {
                   <Text>{"GST 18%"}</Text>
                 </View>
                 <View style={{ width: "50%", padding: "5px" }}>
-                  <Text
+                  {formFields.isGST && <Text
                     style={{
                       fontWeight: "bold",
                       color: colorDark,
@@ -334,7 +343,7 @@ const PdfInvoice = (props) => {
                     }}
                   >
                     {calculateGST()}
-                  </Text>
+                  </Text>}
                 </View>
               </View>
               <View

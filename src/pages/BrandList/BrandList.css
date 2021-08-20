@@ -1,0 +1,10 @@
+.brand-search-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.brand-list-container {
+    width: 50%;
+    margin: 0px auto;
+}

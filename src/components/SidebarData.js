@@ -59,6 +59,14 @@ export const SidebarData = [
         title: 'Staff',
         path: '/addStaff',
         icon: <IoIcons.IoIosPaper />
+      },{
+        title: 'Vendor',
+        path: '/addVendor',
+        icon: <IoIcons.IoIosPaper />
+      },{
+        title: 'Store',
+        path: '/addStore',
+        icon: <IoIcons.IoIosPaper />
       }
     ]
   },
@@ -87,10 +95,31 @@ export const SidebarData = [
         icon: <IoIcons.IoIosPaper />
       },
       {
-        title: 'Message 2',
-        path: '/messages/message2',
+        title: 'Purchase List',
+        path: '/purchaseList',
+        icon: <IoIcons.IoIosPaper />
+      },
+      {
+        title: 'Vendor List',
+        path: '/vendorList',
+        icon: <IoIcons.IoIosPaper />
+      },
+      {
+        title: 'Store List',
+        path: '/storeList',
+        icon: <IoIcons.IoIosPaper />
+      },
+      {
+        title: 'Brand List',
+        path: '/brandList',
+        icon: <IoIcons.IoIosPaper />
+      },
+      {
+        title: 'Category List',
+        path: '/categoryList',
         icon: <IoIcons.IoIosPaper />
       }
+
     ]
   },
   {

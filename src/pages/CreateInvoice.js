@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
@@ -24,264 +24,6 @@ const StyledDiv = styled.div`
   display: flex;
 `;
 
-let items = [
-  {
-    itemName: "item1",
-    itemId: 1,
-    categoryId: "cat1",
-    categoryName: "Chair",
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand1",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl:
-      "https://res.cloudinary.com/doxjtszxv/image/upload/v1620122700/zj1sjjojjrvi7unamnz7.jpg",
-  },
-  {
-    itemName: "item2",
-    itemId: 2,
-    categoryId: "cat2",
-    categoryName: "Chair",
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand2",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl:
-      "https://res.cloudinary.com/doxjtszxv/image/upload/v1620070516/klaxao8dnwt4o3sv8k4a.jpg",
-  },
-  {
-    itemName: "item3",
-    itemId: 3,
-    categoryId: "cat3",
-    categoryName: "Chair",
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl:
-      "https://res.cloudinary.com/doxjtszxv/image/upload/v1620070426/koy8u8rguufyquu10e2x.jpg",
-  },
-  {
-    itemName: "item4",
-    itemId: 4,
-    categoryId: null,
-    categoryName: null,
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: null,
-    brandName: null,
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: null,
-    quantity: 3,
-    imageUrl:
-      "https://res.cloudinary.com/doxjtszxv/image/upload/v1619299004/b9ghw2weqr3oxhnhedav.jpg",
-  },
-  {
-    itemName: "item5",
-    itemId: 5,
-    categoryId: null,
-    categoryName: null,
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: null,
-    brandName: null,
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: null,
-    quantity: 3,
-    imageUrl: "imageUrl4",
-  },
-  {
-    itemName: "item6",
-    itemId: 6,
-    categoryId: null,
-    categoryName: null,
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "wh1",
-    quantity: 3,
-    imageUrl: "imageUrl4",
-  },
-  {
-    itemName: "item7",
-    itemId: 7,
-    categoryId: null,
-    categoryName: null,
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "item7",
-    itemId: 8,
-    categoryId: null,
-    categoryName: null,
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "item7",
-    itemId: 9,
-    categoryId: "cat3",
-    categoryName: "Chair",
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "item10",
-    itemId: 10,
-    categoryId: "cat3",
-    categoryName: "Chair",
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "item11",
-    itemId: 11,
-    categoryId: "cat3",
-    categoryName: "Chair",
-    description: "patio furniture",
-    gstPercent: 18.5,
-    costPrice: 3000,
-    sellingPrice: 6500,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "",
-    aliasCode: "",
-    warehouseId: "",
-    quantity: 3,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "sofa green corner",
-    itemId: 12,
-    categoryId: "",
-    categoryName: "sofa set",
-    description: "awesome sofa set",
-    gstPercent: 18,
-    costPrice: 35000,
-    sellingPrice: 0,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "9403",
-    aliasCode: "100000000001",
-    warehouseId: "",
-    quantity: 0,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "sofa green corner",
-    itemId: 13,
-    categoryId: "",
-    categoryName: "sofa set",
-    description: "awesome sofa set",
-    gstPercent: 18,
-    costPrice: 35000,
-    sellingPrice: 0,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "9403",
-    aliasCode: "100000000001",
-    warehouseId: "",
-    quantity: 0,
-    imageUrl: "imageUrl3",
-  },
-  {
-    itemName: "New sofa green corner",
-    itemId: 14,
-    categoryId: "",
-    categoryName: "sofa set",
-    description: "awesome sofa green",
-    gstPercent: 18,
-    costPrice: 35000,
-    sellingPrice: 0,
-    discountPercent: 0,
-    brandId: "brand3",
-    brandName: "Royal Furniture",
-    hsnCode: "9403",
-    aliasCode: "100000000001",
-    warehouseId: "",
-    quantity: 0,
-    imageUrl: "imageUrl3",
-  },
-];
 
 const fullWidthTextFieldStyle = {
   width: "100%",
@@ -301,27 +43,40 @@ function ConvertItemsDataToDropdownData(items) {
   return dropdownItem;
 }
 
+function ConvertStaffDataToDropdownData(staff) {
+  var dropdownItem = [];
+  staff.map((staff, i) => {
+    dropdownItem.push({
+      text: staff.staffName,
+      value: staff.staffId,
+    });
+  });
+  return dropdownItem;
+}
+
 function CreateInvoice(props) {
   let initialValues = props.location.state
     ? {
-        invoiceNumber: props.location.state.invoiceNumber,
+        orderInvoice: props.location.state.orderInvoice,
         customerNumber: props.location.state.customerId,
-        items: props.location.state.items,
+        orderItems: props.location.state.orderItems,
         customer: {},
         deliveryDate: props.location.state.deliveryDate,
-        invoiceDate: props.location.state.bookingDate,
-        isGstApplicable: false,
+        bookingDate: props.location.state.bookingDate,
+        isGst: false,
         isFullyPaid:false,
+        staff:{},
       }
     : {
-        invoiceNumber: "",
+        orderInvoice: "",
         customerNumber: "",
-        items: [{ name: "", quantity: "", sellingPrice: "", warehouseId: "" }],
+        orderItems: [{ name: "", quantity: "", sellingPrice: "", warehouseId: "" }],
         customer: {},
         deliveryDate: "",
-        invoiceDate: "",
-        isGstApplicable: false,
+        bookingDate: "",
+        isGst: false,
         isFullyPaid:false,
+        staff:{},
       };
 
   let isEditing = props.location.state ? true : false;
@@ -333,23 +88,44 @@ function CreateInvoice(props) {
   const [showCustomerFields, setshowCustomerFields] = useState(false);
 
   const [warehouseDict, setWarehouseDict] = useState([]);
+  const [items, setItems] = useState([])
+  const [staff, setStaff] = useState([])
+
+  useEffect(() => { getItem()
+    getStaff() }, [])
 
   function addItem(e, values, setValues) {
-    const items = [...values.items];
-    items.push({ name: "", quantity: "", sellingPrice: "", warehouseId: "" });
+    const orderItems = [...values.orderItems];
+    orderItems.push({ name: "", quantity: "", sellingPrice: "", warehouseId: "" });
 
-    setValues({ ...values, items });
+    setValues({ ...values, orderItems });
   }
 
-  function onCustomerNumberEntry() {   
+  const getItem = () => {
+    getCall('items').then((data) => {
+      setItems(data)
+    } ).catch((reason) => {
+      console.log("FAILURE!!");
+    })
+  }
 
-    getCall("getCustomer/8008911176")
+  const getStaff = () => {
+    getCall('staffs').then((data) => {
+      setStaff(data)
+    } ).catch((reason) => {
+      console.log("FAILURE!!");
+    })
+  }
+
+  function onCustomerNumberEntry(event) {   
+
+    getCall("customers", { params: {phone:event.target.value}})
       .then((data) => {
         console.log("SUCCESS!!");
-        setCustomer(data);
+        setCustomer(data[0]);
         initialValues = {
-          customerNumber: "8008911176",
-          items: initialValues.items,
+          customerNumber: event.target.value,
+          orderItems: initialValues.orderItems,
           customer: customer,
         };
         setshowCustomerFields(true);
@@ -362,20 +138,30 @@ function CreateInvoice(props) {
   function onSubmit(fields) {
     // display form field values on success
 
-    let amount = fields.items.reduce((accumulator, currentValue) => { return accumulator + (currentValue.sellingPrice * currentValue.quantity) }, 0);
+    let amount = fields.orderItems.reduce((accumulator, currentValue) => { return accumulator + (currentValue.sellingPrice * currentValue.quantity) }, 0);
 
     if (!fields['isFullyPaid']) {
       amount = fields['partialPayment']
     }
-    fields['salesTransaction'] = {
+
+    if (fields['isGst'] ) {
+      fields['isGst'] = 1
+    } else {
+      fields['isGst'] = 0
+    }
+    fields['orderId'] = 0
+    fields['salesTransaction'] = [{
       "transactionId": 0,
       "orderId": 0,
       "amountPaid": amount,
-    }
-
+    }]
+    fields['staffId'] = fields['staff']
+    fields['customerId'] = customer.customerId
+    delete fields['staff']
     delete fields['partialPayment']
+    delete fields['customer']
     console.log(JSON.stringify(fields, null, 4))
-    postCall("createInvoice", JSON.stringify(fields, null, 4))
+    postCall("orders", JSON.stringify(fields, null, 4))
       .then((data) => {
         console.log("successfully posted invoice");
       })
@@ -391,31 +177,32 @@ function CreateInvoice(props) {
       
       setWarehouseDict(oldArray => [...oldArray, data.map( value => { return {'value':value.id ,'label':value.name}})])
     }).catch((reason) => {
+      setWarehouseDict(oldArray => [...oldArray,  [{'value':'3' ,'label':'test_store_name'}]])
       console.log("failed to get warehouse for index : "+  index);
     })
   }
 
   function onItemDropDownChange(index, values, setValues, selectedItem) {
-    const items = [...values.items];
-    items[index].name = selectedItem;
+    const orderItems = [...values.orderItems];
+    orderItems[index].name = selectedItem;
 
-    setValues({ ...values, items });
+    setValues({ ...values, orderItems });
 
     getWarehouseForItem(selectedItem.itemName, index)
   }
 
-  function onWarehouseDropDownChange(index, values, setValues, selectedWarehouse) {
-    const items = [...values.items];
-    items[index].warehouseId = selectedWarehouse;
+  function onStaffDropDownChange(values, setValues, selectedStaff) {
+    var staff = values.staff;
+    staff = selectedStaff;
 
-    setValues({ ...values, items });
+    setValues({ ...values, staff });
   }
 
   function removeItem(index, values, setValues) {
-    const items = [...values.items];
-    items.splice(index, 1);
+    const orderItems = [...values.orderItems];
+    orderItems.splice(index, 1);
 
-    setValues({ ...values, items });
+    setValues({ ...values, orderItems });
   }
 
   function isFullyPaidClicked(e , setValues , values) {
@@ -434,16 +221,16 @@ function CreateInvoice(props) {
       >
         {({ errors, values, touched, setValues }) => (
           <Form>
-            {initialValues.invoiceNumber != "" && <div className="form-group">
+            {initialValues.orderInvoice != "" && <div className="form-group">
               <label>Invoice Number</label>
               <Field
-                name="invoiceNumber"
+                name="orderInvoice"
                 type="text"
                 style={fullWidthTextFieldStyle}
                 onBlur={() => {}}
               ></Field>
               <ErrorMessage
-                name="invoiceNumber"
+                name="orderInvoice"
                 component="div"
                 className="invalid-feedback"
               />
@@ -469,7 +256,7 @@ function CreateInvoice(props) {
                 <div>
                   <label>Invoice Date</label>
                   <Field
-                    name="invoiceDate"
+                    name="bookingDate"
                     type="date"
                     style={{
                       margin: "1rem 0 1rem 2rem",
@@ -513,15 +300,15 @@ function CreateInvoice(props) {
                 <Field
                   type="checkbox"
                   name="checked"
-                  value="isGstApplicable"
+                  value="isGst"
                   style={{ width: "20px", height: "20px", marginRight: "5px" }}
                 />
                 Is GST Applied
               </label>
             </div>
-            <FieldArray name="items">
+            <FieldArray name="orderItems">
               {() =>
-                values.items.map((item, i) => {
+                values.orderItems.map((item, i) => {
                   const ticketErrors =
                     (errors.items?.length && errors.items[i]) || {};
                   const ticketTouched =
@@ -555,9 +342,9 @@ function CreateInvoice(props) {
                           }}
                         >
                           <div style={{ width: "100%",display:'flex'}}>
-                            <div style={{ width: "55%", float: "left" }}>
+                            <div style={{ width: "40%", float: "left" }}>
                             <Dropdown
-                              name={`items.${i}.name`}
+                              name={`orderItems.${i}.name`}
                               placeholder="Select Item"
                               fluid
                               search
@@ -574,29 +361,44 @@ function CreateInvoice(props) {
                               defaultValue={item.itemName}
                             />
                             <ErrorMessage
-                              name={`items.${i}.name`}
+                              name={`orderItems.${i}.name`}
                               component="div"
                               className="invalid-feedback"
                             />
                             </div>
-                            <div style={{ width: "45%" }}>
+                            <div style={{ width: "30%" }}>
                             <label style={{ margin: "0rem 1rem 0rem 1rem", width:'30%' }}>
                               Quantity
                             </label>
                             <Field
-                              name={`items.${i}.quantity`}
+                              name={`orderItems.${i}.quantity`}
                               type="text"
                               style={{ height: "40px", width:'70%'  }}
                             />
                             <ErrorMessage
-                              name={`items.${i}.quantity`}
+                              name={`orderItems.${i}.quantity`}
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                            </div>
+                            <div style={{width:'30%'}}>
+                            <label style={{width:'30%', marginRight:'10px'}}>
+                              Selling Price
+                            </label>
+                            <Field
+                              name={`orderItems.${i}.sellingPrice`}
+                              type="number"
+                              style={{ height: "40px", width:'70%' }}
+                            />
+                            <ErrorMessage
+                              name={`orderItems.${i}.sellingPrice`}
                               component="div"
                               className="invalid-feedback"
                             />
                             </div>
                           </div>
                           <div style={{display:'flex', marginTop:'20px'}}>
-                            <div style={{width:'45%'}}>
+                            {/* <div style={{width:'45%'}}>
                             <label style={{width:'30%', marginRight:'10px'}}>
                               Selling Price
                             </label>
@@ -610,8 +412,8 @@ function CreateInvoice(props) {
                               component="div"
                               className="invalid-feedback"
                             />
-                            </div>
-                            <div  style={{width:'55%', display:'flex', alignItems:'center'}}>
+                            </div> */}
+                            {/* <div  style={{width:'55%', display:'flex', alignItems:'center'}}>
                               <label  style={{width:'30%'}}>Warehouse:</label>
                               <RCreatable
                                 name={`items.${i}.warehouseId`}
@@ -626,15 +428,15 @@ function CreateInvoice(props) {
                                 onBlur={() => {}}
                                 options={warehouseDict[i]}
                               />
-                            </div>
+                            </div> */}
                           </div>
                         </div>
-                        <div style={{width:'10%', display:'flex', justifyContent:'center',alignItems:'center'}}>
+                        <div style={{width:'10%', display:'flex'}}>
                         <button
                               className="removeLink"
                               type="button"
                               onClick={(e) => removeItem(i, values, setValues)}
-                              style={{ margin: "0rem 1rem 0rem 1rem" }}
+                              style={{ margin: "0rem 0rem 0rem 0rem", textAlign:'center' }}
                             >
                               remove
                             </button>
@@ -688,6 +490,23 @@ function CreateInvoice(props) {
                   height: "100px",
                 }}
               />
+            </div>
+            <div>
+            <Dropdown
+                              name='staff'
+                              placeholder="Select Staff"
+                              fluid
+                              search
+                              selection
+                              options={ConvertStaffDataToDropdownData(staff)}
+                              onChange={(event, data) => {
+                                onStaffDropDownChange(
+                                  values,
+                                  setValues,
+                                  data.value
+                                );
+                              }}
+                            />
             </div>
             <div >
               <label>Payments</label>

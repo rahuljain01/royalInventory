@@ -1,0 +1,10 @@
+.vendor-search-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.vendor-list-container {
+    width: 80%;
+    margin: 0px auto;
+}

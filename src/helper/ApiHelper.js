@@ -7,7 +7,7 @@ export const getCall = (path, headers) => {
         axios.get(config.baseUrl + path, headers
             ).then(function (responseArr) {
               console.log('SUCCESS!!');
-              resolve(responseArr.data)
+              resolve(responseArr.data.data)
             })
             .catch(function (reason) {
               console.log('FAILURE!!');
@@ -20,10 +20,12 @@ export const getCall = (path, headers) => {
 export const postCall = (path, data) => {
 
     return new Promise((resolve, reject) => {
-        axios.post(config.baseUrl + path, data
+        axios.post(config.baseUrl + path, data, {
+          headers:{'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json', 'mode':'cors'}
+        }
             ).then(function (responseArr) {
               console.log('SUCCESS!!');
-              resolve(responseArr.data)
+              resolve(responseArr.data.data)
             })
             .catch(function (reason) {
               console.log('FAILURE!!');
@@ -39,7 +41,7 @@ export const putCall = (path, data) => {
       axios.put(config.baseUrl + path, data
           ).then(function (responseArr) {
             console.log('SUCCESS!!');
-            resolve(responseArr.data)
+            resolve(responseArr.data.data)
           })
           .catch(function (reason) {
             console.log('FAILURE!!');
@@ -49,6 +51,6 @@ export const putCall = (path, data) => {
   
 }
 
-const headers = () => {
-
+const header = () => {
+  return {'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json', 'mode':'cors'}
 }

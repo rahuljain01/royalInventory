@@ -4,21 +4,21 @@ import Card from "../../components/Card/Card";
 import PageTitleContainer from "../../components/PageTitleContainer/PageTitleContainer";
 import Table from "../../components/Table/Table";
 import { getCall } from "../../helper/ApiHelper";
-import './StaffList.css'
+import './StoreList.css'
 import { useHistory } from "react-router-dom";
 
-const StaffList = () => {
+const StoreList = () => {
 
     let history = useHistory();
 
-    const [staff, setStaff] = useState([]);
+    const [store, setStore] = useState([]);
 
-    const [filteredStaff, setFilteredStaff] = useState([]);
+    const [filteredStore, setFilteredStore] = useState([]);
 
-    const getStaff = () => {
-        getCall('staffs').then(function (responseArr) {
-            setStaff(responseArr)
-            setFilteredStaff(responseArr)
+    const getStore = () => {
+        getCall('stores').then(function (responseArr) {
+            setStore(responseArr)
+            setFilteredStore(responseArr)
             console.log('SUCCESS!!');
           })
           .catch(function (reason) {
@@ -28,10 +28,10 @@ const StaffList = () => {
     }
 
     useEffect(() => {
-        getStaff()
+        getStore()
       }, []);
 
-      function checkMatchesInStaffList(item, value) {
+      function checkMatchesInCustomerList(item, value) {
         var ifTrue = false;
         Object.keys(item).forEach((key) => {
             if (item[key] != null) {
@@ -48,27 +48,27 @@ const StaffList = () => {
       }
 
       const handleSearchChange = (event) => {
-        var filteredList = staff.filter(function (item) {
-          return checkMatchesInStaffList(item, event.target.value);
+        var filteredList = store.filter(function (item) {
+          return checkMatchesInCustomerList(item, event.target.value);
         });
-        setFilteredStaff(filteredList);
+        setFilteredStore(filteredList);
       };
 
-    const staffData = filteredStaff.map( (staff) => (
-        [staff.staffId, staff.staffName, staff.phone, staff.address]
+    const storeData = filteredStore.map( (store) => (
+        [store.storeId,store.storeName, store.address]
       ))
 
-    const heading = ['Employee Id', 'Name', 'Phone Number', 'Address', 'Designation']
+    const heading = ['Store Id', 'Name', 'Address']
 
     const onEditClick = (index) => {
-        history.push({ pathname: "/addStaff", state: filteredStaff[index] });
+        history.push({ pathname: "/addStore", state: filteredStore[index] });
         console.log('edit clicked for index: ' + index)
       }
 
     return (
-        <PageTitleContainer title="Staff List">
+        <PageTitleContainer title="Store List">
     
-          <div className='staff-search-container'>
+          <div className='store-search-container'>
             <input
               id="invoiceSearchKey"
               name="invoiceSearchKey"
@@ -84,12 +84,12 @@ const StaffList = () => {
               }}
             />
           </div>
-          <Card className="staff-list-container">
-            <Table heading={heading} body={staffData} onEditClick={onEditClick}/>
+          <Card className="store-list-container">
+            <Table heading={heading} body={storeData} onEditClick={onEditClick}/>
           </Card>
         </PageTitleContainer>
       );
 
 }
 
-export default StaffList;
+export default StoreList;

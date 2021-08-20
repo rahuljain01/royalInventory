@@ -10,6 +10,7 @@ import './AddItem.css'
 import CtaButton from '../../components/CtaButton/CtaButton';
 import Card from '../../components/Card/Card';
 import PageTitleContainer from '../../components/PageTitleContainer/PageTitleContainer';
+import { getCall, postCall } from '../../helper/ApiHelper';
 
 
 const InputLabel = styled.label`
@@ -53,7 +54,7 @@ const formikEnhancer = withFormik({
       hsnCode:props.initialValues.hsnCode,
       aliasCode:props.initialValues.aliasCode,
       file: null,
-      parentItemName:'',
+      parentItemName:props.initialValues.parentItemName,
       category: props.initialValues.category,
       numberOfCopy:props.initialValues.numberOfCopy,
   }),
@@ -65,8 +66,8 @@ const formikEnhancer = withFormik({
 
       var bodyDict = {
         itemName:values.itemName,
-        isParent:1,
-        parentItemName:'',
+        isParent:values.parentItemName == {} ? 1:0,
+        parentItemName:values.parentItemName,
         numberOfCopy: values.numberOfCopy,
         description:values.description,
         gstpercent:values.gstpercent,
@@ -96,7 +97,10 @@ const formikEnhancer = withFormik({
         bodyDict['categoryId'] = values.category.value
       }
 
-    axios.post(baseUrl + 'Items', bodyDict).then(function (responseArr) {
+      bodyDict['parentItemName'] = values.parentItemName.value ? values.parentItemName.value:''
+
+      bodyDict['isParent'] = Object.keys(values.parentItemName).length == 0 ? 1:0
+    postCall('items', bodyDict).then(function (responseArr) {
             console.log('SUCCESS!!');
           })
           .catch(function (reason) {
@@ -126,17 +130,18 @@ const MyForm = props => {
   const [imageUrl, setImageUrl] = React.useState("");
   const [categoryOptions, setCategoryOptions] = React.useState([]);
   const [brandOptions, setBrandOptions] = React.useState([]);
-  const [warehouseOptions, setWarehouseOptions] = React.useState([]);
+  const [parentItems, setParentItems] = React.useState([]);
   
 
   useEffect(() => {
     getCategories()
     getBrands()
+    getAllParentItems()
   }, []);
 
   function getCategories() {
-    axios.get(baseUrl + 'categories').then(function (responseArr) {
-      setCategoryOptions(convertCategoryDataToDropdownData(responseArr.data))
+    getCall('categories').then(function (responseArr) {
+      setCategoryOptions(convertCategoryDataToDropdownData(responseArr))
       console.log('SUCCESS!!');
     })
     .catch(function (reason) {
@@ -146,19 +151,19 @@ const MyForm = props => {
   }
 
   function getBrands() {
-    axios.get(baseUrl + 'brands').then(function (responseArr) {
-      setBrandOptions(convertBrandDataToDropdownData(responseArr.data))
+    getCall('brands').then(function (responseArr) {
+      setBrandOptions(convertBrandDataToDropdownData(responseArr))
       console.log('SUCCESS!!');
     })
     .catch(function (reason) {
       console.log('FAILURE!!');
       alert(reason)
     });
-  }
+  } 
 
-  function getParentItems() {
-    axios.get(baseUrl + '/items?isParent=1').then(function (responseArr) {
-      //setBrandOptions(convertDataToDropdownData(responseArr.data))
+  function getAllParentItems() {
+    getCall('items', {isParent: 1}).then(function (responseArr) {
+      setParentItems(convertItemDataToDropdownData(responseArr))
       console.log('SUCCESS!!');
     })
     .catch(function (reason) {
@@ -171,6 +176,15 @@ const MyForm = props => {
     let dropdownData = []
     data.map((node, index) => {
       dropdownData.push({'value':node.brandId , 'label':node.brandName})
+    })
+
+    return dropdownData
+  }
+
+  function convertItemDataToDropdownData(data) {
+    let dropdownData = []
+    data.map((node, index) => {
+      dropdownData.push({'value':node.itemName , 'label':node.itemName})
     })
 
     return dropdownData
@@ -326,11 +340,11 @@ const MyForm = props => {
             Parent Item:
           </InputLabel>
           <RCreatable
-          name='parentItem'
+          name='parentItemName'
           onChange={setFieldValue}
           value = {values.parentItemName}
           onBlur={setFieldTouched}
-          options={warehouseOptions}
+          options={parentItems}
       />
       </div>
         <CtaButton type="submit">{'ADD'}</CtaButton>
@@ -367,7 +381,7 @@ const AddItem = (props) => {
   hsnCode:9403,
   aliasCode:item.aliasCode,
   file: null,
-  parentItemName:'',
+  parentItemName:{value:item.parentItemName, label:item.parentItemName},
   category: {value:item.category.categoryId, label:item.category.categoryName},
   numberOfCopy:item.numberOfCopy,} : {
     itemName: '',
@@ -377,7 +391,7 @@ const AddItem = (props) => {
     hsnCode:9403,
     aliasCode:'',
     file: null,
-    parentItemName:'',
+    parentItemName:{},
     category: {},
     numberOfCopy:1,
 }

@@ -4,21 +4,21 @@ import Card from "../../components/Card/Card";
 import PageTitleContainer from "../../components/PageTitleContainer/PageTitleContainer";
 import Table from "../../components/Table/Table";
 import { getCall } from "../../helper/ApiHelper";
-import './StaffList.css'
+import './BrandList.css'
 import { useHistory } from "react-router-dom";
 
-const StaffList = () => {
+const BrandList = () => {
 
     let history = useHistory();
 
-    const [staff, setStaff] = useState([]);
+    const [brand, setBrand] = useState([]);
 
-    const [filteredStaff, setFilteredStaff] = useState([]);
+    const [filteredBrand, setFilteredBrand] = useState([]);
 
-    const getStaff = () => {
-        getCall('staffs').then(function (responseArr) {
-            setStaff(responseArr)
-            setFilteredStaff(responseArr)
+    const getBrand = () => {
+        getCall('brands').then(function (responseArr) {
+            setBrand(responseArr)
+            setFilteredBrand(responseArr)
             console.log('SUCCESS!!');
           })
           .catch(function (reason) {
@@ -28,10 +28,10 @@ const StaffList = () => {
     }
 
     useEffect(() => {
-        getStaff()
+        getBrand()
       }, []);
 
-      function checkMatchesInStaffList(item, value) {
+      function checkMatchesInCustomerList(item, value) {
         var ifTrue = false;
         Object.keys(item).forEach((key) => {
             if (item[key] != null) {
@@ -48,27 +48,27 @@ const StaffList = () => {
       }
 
       const handleSearchChange = (event) => {
-        var filteredList = staff.filter(function (item) {
-          return checkMatchesInStaffList(item, event.target.value);
+        var filteredList = brand.filter(function (item) {
+          return checkMatchesInCustomerList(item, event.target.value);
         });
-        setFilteredStaff(filteredList);
+        setFilteredBrand(filteredList);
       };
 
-    const staffData = filteredStaff.map( (staff) => (
-        [staff.staffId, staff.staffName, staff.phone, staff.address]
+    const brandData = filteredBrand.map( (brand) => (
+        [brand.brandId, brand.brandName]
       ))
 
-    const heading = ['Employee Id', 'Name', 'Phone Number', 'Address', 'Designation']
+    const heading = ['Brand Id', 'Name']
 
     const onEditClick = (index) => {
-        history.push({ pathname: "/addStaff", state: filteredStaff[index] });
+        history.push({ pathname: "/addBrand", state: filteredBrand[index] });
         console.log('edit clicked for index: ' + index)
       }
 
     return (
-        <PageTitleContainer title="Staff List">
+        <PageTitleContainer title="Brand List">
     
-          <div className='staff-search-container'>
+          <div className='brand-search-container'>
             <input
               id="invoiceSearchKey"
               name="invoiceSearchKey"
@@ -84,12 +84,12 @@ const StaffList = () => {
               }}
             />
           </div>
-          <Card className="staff-list-container">
-            <Table heading={heading} body={staffData} onEditClick={onEditClick}/>
+          <Card className="brand-list-container">
+            <Table heading={heading} body={brandData}/>
           </Card>
         </PageTitleContainer>
       );
 
 }
 
-export default StaffList;
+export default BrandList;

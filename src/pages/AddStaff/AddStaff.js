@@ -11,9 +11,9 @@ const AddStaff = (props) => {
     const validate = values => {
         const errors = {};
       
-        if (!values.name) {
+        if (!values.staffName) {
           errors.name = 'Required';
-        } else if (values.name.length > 15) {
+        } else if (values.staffName.length > 15) {
           errors.name = 'Must be 15 characters or less';
         }
       
@@ -23,16 +23,16 @@ const AddStaff = (props) => {
 
     const formik = useFormik({
         initialValues: props.staff ? props.staff: {
-          name: '',
-          designation:'',
-          phoneNumber:'',
+          staffName: '',
+          optionalData:'',
+          phone:'',
           emailAddress:'',
           address:'',
         },
         validate,
         enableReinitialize:false,
         onSubmit: values => {
-          postCall('staff', values).then((data) => {
+          postCall('staffs', values).then((data) => {
             console.log("successfully posted invoice");
           })
           .catch((reason) => {
@@ -45,20 +45,20 @@ const AddStaff = (props) => {
       return (
         <PageTitleContainer title='Add Staff Member'>
         <Card className='staff-container'>
-        <form  onSubmit={(e) => { e.preventDefault(); formik.handleSubmit(e)}}>
+        <form  onSubmit={(e) => {e.preventDefault(); formik.handleSubmit(e)}}>
             <div>
               <label className='staff-label'>
                 Name:
               </label>
               <input 
                 className='staff-input'
-                id="name"
-                name="name"
+                id="staffName"
+                name="staffName"
                 type="text"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.customerName} />
-                {formik.errors.customerName ? <div style={{color:'red'}}>{formik.errors.customerName}</div> : null}
+                value={formik.values.staffName} />
+                {formik.errors.staffName ? <div style={{color:'red'}}>{formik.errors.staffName}</div> : null}
             </div>
             <div>
               <label className='staff-label'>
@@ -66,13 +66,13 @@ const AddStaff = (props) => {
               </label>
               <input 
                 className='staff-input' 
-                id="phoneNumber"
-                name="phoneNumber"
+                id="phone"
+                name="phone"
                 type="number"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.phoneNumber} />
-                {formik.errors.phoneNumber ? <div>{formik.errors.phoneNumber}</div> : null}
+                value={formik.values.phone} />
+                {formik.errors.phone ? <div>{formik.errors.phone}</div> : null}
             </div>
     
             <div>
@@ -93,12 +93,12 @@ const AddStaff = (props) => {
               </label>
               <input 
                 className='staff-input' 
-                id="designation"
-                name="designation"
+                id="optionalData"
+                name="optionalData"
                 type='text'
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.gstNumber}
+                value={formik.values.optionalData}
                 style={{marginBottom:'2rem'}} />
               </div>   
             <CtaButton type="submit" onClick={() => {}}>{'ADD'}</CtaButton>

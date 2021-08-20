@@ -24,6 +24,7 @@ class RCreatable extends React.Component {
             onChange={this.handleChange}
             onBlur={this.handleBlur}
             value={this.props.value}
+            defaultValue={this.props.defaultValue}
           />
           {!!this.props.error &&
             this.props.touched && (
