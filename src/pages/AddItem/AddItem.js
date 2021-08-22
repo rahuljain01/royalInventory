@@ -101,7 +101,6 @@ const formikEnhancer = withFormik({
 
       bodyDict['isParent'] = Object.keys(values.parentItemName).length == 0 ? 1:0
     postCall('items', bodyDict).then(function (responseArr) {
-            console.log('SUCCESS!!');
           })
           .catch(function (reason) {
             console.log('FAILURE!!');
