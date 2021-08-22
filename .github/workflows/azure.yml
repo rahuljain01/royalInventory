@@ -40,6 +40,8 @@ jobs:
         npm install
         npm audit fix --force
         false npm run build --if-present
+        npm audit fix --force
+        false npm run build --if-present
         npm run test --if-present
     - name: add process.json
       run: |
