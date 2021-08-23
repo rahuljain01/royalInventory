@@ -1,0 +1,5 @@
+{
+    "azure.tenant": "842dcd1b-33c4-4e1c-815a-ffe1525e2440",
+    "appService.defaultWebAppToDeploy": "/subscriptions/59cb4910-7cbf-431e-86b1-7d3d65e2ad7e/resourceGroups/RoyalFurniture_Inventory/providers/Microsoft.Web/sites/royalsolutions",
+    "appService.deploySubpath": "build"
+}

@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useState } from "react/cjs/react.development";
+import { useEffect, useState } from "react";
 import Card from "../../components/Card/Card";
 import PageTitleContainer from "../../components/PageTitleContainer/PageTitleContainer";
 import Table from "../../components/Table/Table";
@@ -25,10 +24,10 @@ const CustomerList = () => {
             console.log('FAILURE!!');
             alert(reason)
           });
-    }
+    };
 
     useEffect(() => {
-        getCustomer()
+        getCustomer();
       }, []);
 
       function checkMatchesInCustomerList(item, value) {
@@ -45,7 +44,7 @@ const CustomerList = () => {
         });
     
         return ifTrue;
-      }
+      };
 
       const handleSearchChange = (event) => {
         var filteredList = customers.filter(function (item) {
@@ -58,15 +57,13 @@ const CustomerList = () => {
         [customer.customerId, customer.customerName, customer.phone, customer.address]
       ))
 
-    const heading = ['Customer Id', 'Name', 'Phone Number', 'Address']
+    const heading = ['Customer Id', 'Name', 'Phone Number', 'Address'];
 
     const onEditClick = (index) => {
         history.push({ pathname: "/addCustomer", state: filteredCustomers[index] });
-        console.log('edit clicked for index: ' + index)
-      }
+      };
 
-    return (
-        <PageTitleContainer title="Customer List">
+    return (        <PageTitleContainer title="Customer List">
     
           <div className='customer-search-container'>
             <input

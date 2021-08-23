@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useState } from "react/cjs/react.development";
+import { useEffect,useState } from "react";
 import Card from "../../components/Card/Card";
 import PageTitleContainer from "../../components/PageTitleContainer/PageTitleContainer";
 import Table from "../../components/Table/Table";
