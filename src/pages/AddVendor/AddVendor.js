@@ -6,6 +6,7 @@ import CtaButton from '../../components/CtaButton/CtaButton';
 import './AddVendor.css'
 import { postCall, putCall } from '../../helper/ApiHelper';
 import PageTitleContainer from '../../components/PageTitleContainer/PageTitleContainer';
+import { showMessage } from '../../components/Alert/AlertPopup';
 
 const InputLabel = styled.label`
   margin-top: 1rem;
@@ -64,22 +65,15 @@ const AddVendor = (props) => {
     enableReinitialize:false,
     onSubmit: values => {
       if (isEditing) {
-        putCall('vendors', values).then((data) => {
-          console.log("successfully posted invoice");
+        putCall('vendors', values, true).then((data) => {
+          showMessage('Done!!!', 'Vendor Edited Successfully', 'success', 'OK')
         })
-        .catch((reason) => {
-          console.log("failed in posting invoice");
-        });
-        alert(JSON.stringify(values, null, 2));
+
       } else {
       //values['vendorId'] = '1'
-      postCall('vendors', values).then((data) => {
-        console.log("successfully posted invoice");
+      postCall('vendors', values, true).then((data) => {
+        showMessage('Done!!!', 'Vendor Added Successfully', 'success', 'OK')
       })
-      .catch((reason) => {
-        console.log("failed in posting invoice");
-      });
-      alert(JSON.stringify(values, null, 2));
     }
     },
   });

@@ -1,3 +1,7 @@
 .create-invoice-container {
     width: 80%;
 }
+
+.invalid-feedback {
+    color: red;
+}

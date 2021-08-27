@@ -54,6 +54,7 @@ const SidebarNav = styled.nav`
   display: flex;
   justify-content: center;
   position: fixed;
+  overflow-y:scroll;
   top: 0;
   left: ${({ sidebar }) => (sidebar ? '0' : '-100%')};
   transition: 350ms;

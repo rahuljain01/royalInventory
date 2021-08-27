@@ -7,7 +7,7 @@ import * as RiIcons from 'react-icons/ri';
 export const SidebarData = [
   {
     title: 'Dashboard',
-    path: '/addItem',
+    path: '/dashboard',
     icon: <AiIcons.AiFillHome />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
@@ -27,7 +27,6 @@ export const SidebarData = [
   },
   {
     title: 'Add',
-    path: '/reports',
     icon: <IoIcons.IoIosPaper />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
@@ -81,8 +80,7 @@ export const SidebarData = [
     icon: <IoIcons.IoMdPeople />
   },
   {
-    title: 'Invoice List',
-    path: '/invoiceList',
+    title: 'List',
     icon: <FaIcons.FaEnvelopeOpenText />,
 
     iconClosed: <RiIcons.RiArrowDownSFill />,
@@ -92,6 +90,11 @@ export const SidebarData = [
       {
         title: 'Customer List',
         path: '/customerList',
+        icon: <IoIcons.IoIosPaper />
+      },
+      {
+        title: 'Invoice List',
+        path: '/invoiceList',
         icon: <IoIcons.IoIosPaper />
       },
       {

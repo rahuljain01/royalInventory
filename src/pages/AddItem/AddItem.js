@@ -11,6 +11,7 @@ import CtaButton from '../../components/CtaButton/CtaButton';
 import Card from '../../components/Card/Card';
 import PageTitleContainer from '../../components/PageTitleContainer/PageTitleContainer';
 import { getCall, postCall } from '../../helper/ApiHelper';
+import { showMessage } from '../../components/Alert/AlertPopup';
 
 
 const InputLabel = styled.label`
@@ -58,6 +59,21 @@ const formikEnhancer = withFormik({
       category: props.initialValues.category,
       numberOfCopy:props.initialValues.numberOfCopy,
   }),
+  validate: values => {
+    const errors = {};
+
+    if (!values.itemName) {
+      errors.itemName = 'Required';
+    }
+    if (Object.keys(values.brand).length == 0) {
+      errors.brand = 'Required';
+    }
+    if (Object.keys(values.category).length == 0) {
+      errors.category = 'Required';
+    }
+
+    return errors;
+  },
   handleSubmit: (values, { setSubmitting }) => {
     const payload = {
       ...values
@@ -100,12 +116,9 @@ const formikEnhancer = withFormik({
       bodyDict['parentItemName'] = values.parentItemName.value ? values.parentItemName.value:''
 
       bodyDict['isParent'] = Object.keys(values.parentItemName).length == 0 ? 1:0
-    postCall('items', bodyDict).then(function (responseArr) {
+    postCall('items', bodyDict, true).then(function (responseArr) {
+      showMessage('Done!!!', 'Item Added Successfully', 'success', 'OK')
           })
-          .catch(function (reason) {
-            console.log('FAILURE!!');
-            alert(reason)
-          });
   },
   displayName: 'MyForm',
 });
@@ -240,7 +253,7 @@ const MyForm = props => {
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.itemName} />
-            {errors.itemName ? <div>{errors.itemName}</div> : null}
+            {errors.itemName ? <div className='add-item__error'>{errors.itemName}</div> : null}
         </div>
         <div className="container__field-div">
           <InputLabel>
@@ -253,6 +266,7 @@ const MyForm = props => {
           onBlur={setFieldTouched}
           options={categoryOptions}
       />
+      {errors.category ? <div className='add-item__error'>{errors.category}</div> : null}
         </div>
         <div className="container__field-div" >
         <InputLabel>
@@ -298,6 +312,7 @@ const MyForm = props => {
           onBlur={setFieldTouched}
           options={brandOptions}
       />
+      {errors.brand ? <div className='add-item__error'>{errors.brand}</div> : null}
         </div>
         <div className="inline__container__div">
           <label>

@@ -71,7 +71,7 @@ const InvoicesList = () => {
   }
 
   const invoiceData = invoices.map( (invoice) => (
-    [invoice.invoiceNumber, invoice.customerName, invoice.amount, convertDateToDisplayFormat(invoice.bookingDate), convertDateToDisplayFormat(invoice.deliveryDate)]
+    [invoice.orderId, invoice.customer.customerName, invoice.amount, convertDateToDisplayFormat(invoice.bookingDate), convertDateToDisplayFormat(invoice.deliveryDate)]
   ))
 
   const compareDate = (firstDate, secondDate) => {

@@ -5,7 +5,7 @@ const ListItem = (props) => {
   const item = props.item;
   const orderDates = ['20/11/21','23/11/21','25/11/21','28/11/21','01/12/21' ]
 
-  const orderDateText = 'Order dates: ' + orderDates.reduce((value,item) => value + ', ' + item, '')
+  const orderDateText = orderDates.length > 0 ? 'Order dates: ' +  orderDates.reduce((value,item) => value + ', ' + item, ''):''
 
   return (
     <div className="pending-item" onClick={() => props.onClick(props.index)}>

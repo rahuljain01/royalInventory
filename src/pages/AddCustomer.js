@@ -1,15 +1,12 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useFormik } from "formik";
-import FileUpload from "../components/FileUpload";
-import axios from "axios";
 import Card from "../components/Card/Card";
 import CtaButton from "../components/CtaButton/CtaButton";
 import "./AddCustomer.css";
 import { postCall, putCall } from "../helper/ApiHelper";
 import PageTitleContainer from "../components/PageTitleContainer/PageTitleContainer";
 import { useState } from "react";
-import swal from 'sweetalert';
 import { showMessage } from "../components/Alert/AlertPopup";
 
 
@@ -37,21 +34,18 @@ const InputTextArea = styled.textarea`
   justify-content: flex-start;
 `;
 
-const InputSelect = styled.select`
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  height: 40px;
-  width: 100%;
-  justify-content: flex-start;
-`;
-
 const validate = (values) => {
   const errors = {};
 
   if (!values.customerName) {
     errors.customerName = "Required";
-  } else if (values.customerName.length > 15) {
-    errors.customerName = "Must be 15 characters or less";
+  }
+  if (values.phone.length < 10 || values.phone.length > 11) {
+    errors.phone = 'Enter correct number of digits'
+  }
+
+  if (!values.phone) {
+    errors.phone = 'Required'
   }
 
   return errors;
@@ -75,6 +69,7 @@ const AddCustomer = (props) => {
   
 
   const submitForm = (values) => {
+    if (formik.isValid ) {
     if (isEditing) {
       putCall("customers", values)
         .then((data) => {
@@ -109,6 +104,7 @@ const AddCustomer = (props) => {
       alert(JSON.stringify(values, null, 2));
     }
   }
+  }
 
   const formik = useFormik({
     initialValues: props.customer
@@ -118,7 +114,7 @@ const AddCustomer = (props) => {
           phone: 0,
           address: "",
           email: "",
-          gstNumber: "",
+          gstno: "",
         },
     validate,
     enableReinitialize: false,
@@ -128,8 +124,6 @@ const AddCustomer = (props) => {
   const containerClass = isInInvoice
     ? "customer-invoice-container"
     : "customer-container";
-
-let customerForm = {}
 
   return (
     <PageTitleContainer title={isInInvoice ? "":"Add Customer"}>
@@ -164,7 +158,7 @@ let customerForm = {}
               onBlur={formik.handleBlur}
               value={formik.values.phone}
             />
-            {formik.errors.phone ? <div>{formik.errors.phone}</div> : null}
+            {formik.errors.phone ? <div style={{ color: "red" }}>{formik.errors.phone}</div> : null}
           </div>
 
           <div>
@@ -178,7 +172,7 @@ let customerForm = {}
             />
           </div>
           <div>
-            <InputLabel>GST no:</InputLabel>
+            <InputLabel>e-mail:</InputLabel>
             <InputText
               id="email"
               name="email"
@@ -186,6 +180,18 @@ let customerForm = {}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.email}
+              style={{ marginBottom: "2rem" }}
+            />
+            </div>
+            <div>
+            <InputLabel>GST no:</InputLabel>
+            <InputText
+              id="gstno"
+              name="gstno"
+              type="text"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.gstno}
               style={{ marginBottom: "2rem" }}
             />
           </div>

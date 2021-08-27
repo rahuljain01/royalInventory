@@ -6,6 +6,7 @@ import CtaButton from '../../components/CtaButton/CtaButton';
 import './AddStore.css'
 import { postCall, putCall } from '../../helper/ApiHelper';
 import PageTitleContainer from '../../components/PageTitleContainer/PageTitleContainer';
+import { showMessage } from '../../components/Alert/AlertPopup';
 
 const InputLabel = styled.label`
   margin-top: 1rem;
@@ -37,8 +38,6 @@ const validate = values => {
 
   if (!values.storeName) {
     errors.storeName = 'Required';
-  } else if (values.storeName.length > 100) {
-    errors.storeName = 'Must be 15 characters or less';
   }
 
   return errors;
@@ -61,21 +60,13 @@ const AddStore = (props) => {
     enableReinitialize:false,
     onSubmit: values => {
       if (isEditing) {
-        putCall('stores', values).then((data) => {
-          console.log("successfully posted invoice");
+        putCall('stores', values, true).then((data) => {
+          showMessage('Done!!!', 'Store edited successfully','success', 'OK');
         })
-        .catch((reason) => {
-          console.log("failed in posting invoice");
-        });
-        alert(JSON.stringify(values, null, 2));
       } else {
-      postCall('stores', values).then((data) => {
-        console.log("successfully posted invoice");
+      postCall('stores', values, true).then((data) => {
+        showMessage('Done!!!', 'Store added successfully','success', 'OK');
       })
-      .catch((reason) => {
-        console.log("failed in posting invoice");
-      });
-      alert(JSON.stringify(values, null, 2));
     }
     },
   });

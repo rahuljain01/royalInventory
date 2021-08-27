@@ -7,7 +7,7 @@ import "../components/ListItem.css";
 import "./ItemView.css";
 import { useHistory } from "react-router-dom";
 import PageTitleContainer from "../components/PageTitleContainer/PageTitleContainer";
-import { config } from "../config/Config";
+import { getCall } from '../helper/ApiHelper'
 
 const ItemView = () => {
   const [items, setItems] = useState([]);
@@ -18,15 +18,12 @@ const ItemView = () => {
 
   useEffect(() => {
     
-    axios
-      .get(config.baseUrl + 'items')
+    getCall('items')
       .then(function (responseArr) {
-        console.log("SUCCESS!!");
-        setItems(responseArr.data);
-        setFilteredItem(responseArr.data)
+        setItems(responseArr);
+        setFilteredItem(responseArr)
       })
       .catch(function (reason) {
-        console.log("FAILURE!!");
         alert(reason);
       });
   }, []);

@@ -3,17 +3,15 @@ import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import AddCustomer from "./AddCustomer";
-import axios from "axios";
 import { useState } from "react";
-import ItemListDropdown from "../components/ItemListDropdown";
 import { Dropdown } from "semantic-ui-react";
 import "../components/Icons.css";
 import { getCall, postCall } from "../helper/ApiHelper";
 import Card from "../components/Card/Card";
 import "./CreateInvoice.css";
 import CtaButton from "../components/CtaButton/CtaButton";
-import RCreatable from "../components/RCreatable";
 import PageTitleContainer from "../components/PageTitleContainer/PageTitleContainer";
+import { showMessage } from "../components/Alert/AlertPopup";
 
 const StyledDiv = styled.div`
   margin-bottom: 2rem;
@@ -121,7 +119,6 @@ function CreateInvoice(props) {
 
     getCall("customers", { params: {phone:event.target.value}})
       .then((data) => {
-        console.log("SUCCESS!!");
         setCustomer(data[0]);
         initialValues = {
           customerNumber: event.target.value,
@@ -131,7 +128,6 @@ function CreateInvoice(props) {
         setshowCustomerFields(true);
       })
       .catch((reason) => {
-        console.log("FAILURE!!");
         alert(reason);
       });
   }
@@ -160,15 +156,20 @@ function CreateInvoice(props) {
     delete fields['staff']
     delete fields['partialPayment']
     delete fields['customer']
-    console.log(JSON.stringify(fields, null, 4))
-    postCall("orders", JSON.stringify(fields, null, 4))
+
+    postCall("orders", JSON.stringify(fields, null, 4), true)
       .then((data) => {
-        console.log("successfully posted invoice");
+        showMessage("Done!",
+          "Invoice added successfully",
+          "success",
+          "Ok").then (() => {
+            history.push({ pathname: "/pdf", state: fields });
+          })
       })
       .catch((reason) => {
-        console.log("failed in posting invoice");
+
       });
-    history.push({ pathname: "/pdf", state: fields });
+    
   }
 
   function getWarehouseForItem(name, index) {
@@ -211,6 +212,31 @@ function CreateInvoice(props) {
     setValues({ ...values, isFullyPaid });
   }
 
+  const validate = values => {
+    const errors = {};
+  
+    if (!values.customerNumber) {
+      errors.customerNumber = 'Required';
+    }
+
+    if (values.customerNumber.stringify < 10 || values.customerNumber.stringify > 11) {
+      errors.customerNumber = 'Enter valid number';
+    }
+    if (values.orderItems.length == 0) {
+      errors.orderItems.name = 'Add Items';
+    }
+
+    if (!values.deliveryDate) {
+      errors.deliveryDate = 'Required';
+    }
+
+    if (!values.bookingDate) {
+      errors.bookingDate = 'Required';
+    }
+  
+    return errors;
+  };
+
   return (
     <PageTitleContainer title='Create Invoice'>
     <Card className="create-invoice-container">
@@ -218,6 +244,7 @@ function CreateInvoice(props) {
         initialValues={initialValues}
         onSubmit={onSubmit}
         enableReinitialize={false}
+        validate={validate}
       >
         {({ errors, values, touched, setValues }) => (
           <Form>
@@ -264,6 +291,11 @@ function CreateInvoice(props) {
                       height: "40px",
                     }}
                   ></Field>
+                  <ErrorMessage
+                name="bookingDate"
+                component="div"
+                className="invalid-feedback"
+              />
                   <br />
                   <label
                     style={{
@@ -283,6 +315,11 @@ function CreateInvoice(props) {
                       height: "40px",
                     }}
                   ></Field>
+                  <ErrorMessage
+                name="deliveryDate"
+                component="div"
+                className="invalid-feedback"
+              />
                 </div>
               </div>
             </div>

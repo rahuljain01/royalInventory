@@ -19,10 +19,8 @@ const BrandList = () => {
         getCall('brands').then(function (responseArr) {
             setBrand(responseArr)
             setFilteredBrand(responseArr)
-            console.log('SUCCESS!!');
           })
           .catch(function (reason) {
-            console.log('FAILURE!!');
             alert(reason)
           });
     }

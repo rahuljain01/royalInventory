@@ -1,23 +1,28 @@
 import axios from 'axios'
 import {config} from '../config/Config'
+import { showMessage } from '../components/Alert/AlertPopup'
 
-export const getCall = (path, headers) => {
+export const getCall = (path, headers, showFailureMessage = false) => {
 
     return new Promise((resolve, reject) => {
         axios.get(config.baseUrl + path, headers
             ).then(function (responseArr) {
-              console.log('SUCCESS!!');
               resolve(responseArr.data.data)
             })
             .catch(function (reason) {
-              console.log('FAILURE!!');
+              if (showFailureMessage) {
+                showMessage("Oops!",
+                "Something went wrong",
+                "error",
+                "Ok")
+              }
               reject(reason)
             });
      });
     
 }
 
-export const postCall = (path, data) => {
+export const postCall = (path, data, showFailureMessage = false) => {
 
     return new Promise((resolve, reject) => {
         axios.post(config.baseUrl + path, data, {
@@ -28,14 +33,19 @@ export const postCall = (path, data) => {
               resolve(responseArr.data.data)
             })
             .catch(function (reason) {
-              console.log('FAILURE!!');
+              if (showFailureMessage) {
+                showMessage("Oops!",
+                "Something went wrong",
+                "error",
+                "Ok")
+              }
               reject(reason)
             });
         });
     
 }
 
-export const putCall = (path, data) => {
+export const putCall = (path, data, showFailureMessage = false) => {
 
   return new Promise((resolve, reject) => {
       axios.put(config.baseUrl + path, data
@@ -44,7 +54,12 @@ export const putCall = (path, data) => {
             resolve(responseArr.data.data)
           })
           .catch(function (reason) {
-            console.log('FAILURE!!');
+            if (showFailureMessage) {
+              showMessage("Oops!",
+              "Something went wrong",
+              "error",
+              "Ok")
+            }
             reject(reason)
           });
       });

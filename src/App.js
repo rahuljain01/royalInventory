@@ -20,6 +20,7 @@ import AddStore from './pages/AddStore/AddStore';
 import StoreList from './pages/StoreList/StoreList';
 import BrandList from './pages/BrandList/BrandList';
 import CategoryList from './pages/CategoryList/CategoryList';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 function App() {
   return (
@@ -44,7 +45,8 @@ function App() {
         <Route path='/addStore' exact component={AddStore} />
         <Route path='/storeList' exact component={StoreList} />
         <Route path='/brandList' exact component={BrandList} />
-        <Route path='/categoryList' exact component={CategoryList} />     
+        <Route path='/categoryList' exact component={CategoryList} />
+        <Route path='/dashboard' exact component={Dashboard} />        
         
       </Switch>
     </Router>

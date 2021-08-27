@@ -4,6 +4,7 @@ import { postCall } from '../../helper/ApiHelper';
 import { useFormik } from 'formik';
 import './AddStaff.css'
 import PageTitleContainer from "../../components/PageTitleContainer/PageTitleContainer";
+import {showMessage} from '../../components/Alert/AlertPopup'
 
 
 const AddStaff = (props) => {
@@ -12,9 +13,17 @@ const AddStaff = (props) => {
         const errors = {};
       
         if (!values.staffName) {
-          errors.name = 'Required';
-        } else if (values.staffName.length > 15) {
-          errors.name = 'Must be 15 characters or less';
+          errors.staffName = 'Required';
+        } 
+        if (!values.optionalData) {
+          errors.optionalData = 'Required'
+        }
+        if (values.phone.length < 10 || values.phone.length > 11) {
+          errors.phone = 'Enter correct number of digits'
+        }
+
+        if (!values.phone) {
+          errors.phone = 'Required'
         }
       
         return errors;
@@ -32,13 +41,9 @@ const AddStaff = (props) => {
         validate,
         enableReinitialize:false,
         onSubmit: values => {
-          postCall('staffs', values).then((data) => {
-            console.log("successfully posted invoice");
+          postCall('staffs', values, true).then((data) => {
+            showMessage('Done!!!', 'Staff Added Successfully','success', 'OK');
           })
-          .catch((reason) => {
-            console.log("failed in posting invoice");
-          });
-          alert(JSON.stringify(values, null, 2));
         },
       });
 
@@ -68,11 +73,11 @@ const AddStaff = (props) => {
                 className='staff-input' 
                 id="phone"
                 name="phone"
-                type="number"
+                type="text"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.phone} />
-                {formik.errors.phone ? <div>{formik.errors.phone}</div> : null}
+                {formik.errors.phone ? <div style={{color:'red'}}>{formik.errors.phone}</div> : null}
             </div>
     
             <div>
@@ -100,6 +105,7 @@ const AddStaff = (props) => {
                 onBlur={formik.handleBlur}
                 value={formik.values.optionalData}
                 style={{marginBottom:'2rem'}} />
+                {formik.errors.optionalData ? <div style={{color:'red'}}>{formik.errors.optionalData}</div> : null}
               </div>   
             <CtaButton type="submit" onClick={() => {}}>{'ADD'}</CtaButton>
           </form>
