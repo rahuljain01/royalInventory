@@ -1,11 +1,20 @@
 import axios from 'axios'
 import {config} from '../config/Config'
 import { showMessage } from '../components/Alert/AlertPopup'
+import authHeader from '../store/auth-header';
 
-export const getCall = (path, headers, showFailureMessage = false) => {
+export const getCall = (path,headers, showFailureMessage = false) => {
 
+  
+  let mergedHeader
+
+  if (headers) {
+    mergedHeader = {...headers,...header}
+  } else {
+    mergedHeader = header
+  }
     return new Promise((resolve, reject) => {
-        axios.get(config.baseUrl + path, headers
+        axios.get(config.baseUrl + path, {headers:header}
             ).then(function (responseArr) {
               resolve(responseArr.data.data)
             })
@@ -25,9 +34,7 @@ export const getCall = (path, headers, showFailureMessage = false) => {
 export const postCall = (path, data, showFailureMessage = false) => {
 
     return new Promise((resolve, reject) => {
-        axios.post(config.baseUrl + path, data, {
-          headers:{'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json', 'mode':'cors'}
-        }
+        axios.post(config.baseUrl + path, data, header
             ).then(function (responseArr) {
               console.log('SUCCESS!!');
               resolve(responseArr.data.data)
@@ -48,7 +55,7 @@ export const postCall = (path, data, showFailureMessage = false) => {
 export const putCall = (path, data, showFailureMessage = false) => {
 
   return new Promise((resolve, reject) => {
-      axios.put(config.baseUrl + path, data
+      axios.put(config.baseUrl + path, data, header
           ).then(function (responseArr) {
             console.log('SUCCESS!!');
             resolve(responseArr.data.data)
@@ -66,6 +73,4 @@ export const putCall = (path, data, showFailureMessage = false) => {
   
 }
 
-const header = () => {
-  return {'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json', 'mode':'cors'}
-}
+const header = {...{'Content-Type': 'application/json'}, ...authHeader()}

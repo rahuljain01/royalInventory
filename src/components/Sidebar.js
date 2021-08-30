@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import { SidebarData } from './SidebarData';
 import SubMenu from './SubMenu';
 import { IconContext } from 'react-icons/lib';
+import SubMenuButton from './SubMenuButton';
+import { logout } from '../store/auth-api';
+
 
 const Nav = styled.div`
   background: #15171c;
@@ -65,10 +68,18 @@ const SidebarWrap = styled.div`
   width: 100%;
 `;
 
-const Sidebar = () => {
+const Sidebar = (props) => {
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
+
+  const history = useHistory()
+
+  const onLogout = () => {
+    props.onLogout();
+    history.push('/login');
+    
+  }
 
   return (
     <>
@@ -87,6 +98,7 @@ const Sidebar = () => {
             {SidebarData.map((item, index) => {
               return <SubMenu item={item} key={index} />;
             })}
+            <SubMenuButton clickHandler={() => {logout(onLogout)}} title='Logout'/>
           </SidebarWrap>
         </SidebarNav>
       </IconContext.Provider>
