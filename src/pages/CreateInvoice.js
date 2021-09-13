@@ -220,7 +220,7 @@ function CreateInvoice(props) {
             "success",
             "Ok"
           ).then(() => {
-            history.push({ pathname: "/pdf/" + data.orderId });
+            history.push({ pathname: "/pdf/" + orderDetails.orderId });
           });
         })
         .catch((reason) => {});
