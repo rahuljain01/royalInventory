@@ -1,13 +1,16 @@
 import Card from "../../components/Card/Card";
 import CtaButton from "../../components/CtaButton/CtaButton";
-import { postCall } from '../../helper/ApiHelper';
+import { postCall, putCall } from '../../helper/ApiHelper';
 import { useFormik } from 'formik';
-import './AddStaff.css'
+import './AddStaff.css';
 import PageTitleContainer from "../../components/PageTitleContainer/PageTitleContainer";
-import {showMessage} from '../../components/Alert/AlertPopup'
+import {showMessage} from '../../components/Alert/AlertPopup';
+import {useState} from 'react';
 
 
 const AddStaff = (props) => {
+
+  const [isEditing, setIsEditing] = useState(false);
 
     const validate = values => {
         const errors = {};
@@ -29,21 +32,36 @@ const AddStaff = (props) => {
         return errors;
       };
       
+      const getInitialValue = () => {
+        if (props.staff) {
+          return props.staff
+        } else if (props.location.state) {
+          return props.location.state
+        } else {
+          return {
+            staffName: '',
+            optionalData:'',
+            phone:'',
+            emailAddress:'',
+            address:'',
+          }
+        }
+      }
 
     const formik = useFormik({
-        initialValues: props.staff ? props.staff: {
-          staffName: '',
-          optionalData:'',
-          phone:'',
-          emailAddress:'',
-          address:'',
-        },
+        initialValues: getInitialValue(),
         validate,
         enableReinitialize:false,
         onSubmit: values => {
+          if (isEditing) {
+            putCall('staffs', values, true).then((data) => {
+              showMessage('Done!!!', 'Staff Added Successfully','success', 'OK');
+            })
+          } else {
           postCall('staffs', values, true).then((data) => {
             showMessage('Done!!!', 'Staff Added Successfully','success', 'OK');
           })
+        }
         },
       });
 

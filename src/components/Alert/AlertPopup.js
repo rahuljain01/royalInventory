@@ -18,3 +18,15 @@ export const showMessage = (title,
         });
     })
   }
+
+  export const showMessageWithMultipleButton = (title,buttons) => {
+
+      return new Promise((resolve, reject) => {
+        swal(title,buttons).then((value) => {
+          resolve(value)
+        }).catch((reason) => {
+          reject(reason)
+        });
+    })
+  }
+

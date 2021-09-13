@@ -106,16 +106,24 @@ const AddCustomer = (props) => {
   }
   }
 
+  const getInitialValue = () => {
+    if (props.customer) {
+      return props.customer
+    } else if (props.location.state) {
+      return props.location.state
+    } else {
+      return {
+        customerName: "",
+        phone: 0,
+        address: "",
+        email: "",
+        gstno: "",
+      }
+    }
+  }
+
   const formik = useFormik({
-    initialValues: props.customer
-      ? props.customer
-      : {
-          customerName: "",
-          phone: 0,
-          address: "",
-          email: "",
-          gstno: "",
-        },
+    initialValues: getInitialValue(),
     validate,
     enableReinitialize: false,
     onSubmit: submitForm,

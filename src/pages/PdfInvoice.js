@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Page,
   Text,
@@ -8,6 +8,7 @@ import {
   PDFViewer,
   Font,
 } from "@react-pdf/renderer";
+import { getCall } from "../helper/ApiHelper";
 
 Font.register({
   family: "Nunito",
@@ -42,7 +43,23 @@ const colorWhite = "#fff";
 
 // Create Document Component
 const PdfInvoice = (props) => {
-  const formFields = props.location.state;
+  const [formFields, setFormFields] = useState({});
+
+  const [isLoading, setIsLoading] = useState(true)
+
+
+  useEffect(() => {
+
+    let orderId = props.match.params.orderId;
+    setIsLoading(true)
+    getCall('orders',{params:{'orderId':orderId}}, true).then((response) => {
+      setFormFields(response[0])
+      setIsLoading(false)
+      
+    }).catch((reason) => {
+      setIsLoading(false)
+    });
+  }, []);
 
   const calculateAmount = (quantity, rate) => {
     const quantityNumber = parseFloat(quantity);
@@ -54,7 +71,7 @@ const PdfInvoice = (props) => {
   };
 
   const calculateTotal = () => {
-    let totalAmount = formFields.orderItems.reduce((accumulator, currentValue) => { return (parseFloat(currentValue.sellingPrice) * parseFloat(currentValue.quantity) + accumulator)}, 0)
+    let totalAmount = formFields.orderItem.reduce((accumulator, currentValue) => { return (parseFloat(currentValue.sellingPrice) * parseFloat(currentValue.quantity) + accumulator)}, 0)
     return totalAmount.toFixed(2)
   }
 
@@ -83,7 +100,8 @@ const PdfInvoice = (props) => {
   }
 
   return (
-    <PDFViewer width="1000px" height="600px">
+    <>
+    {!isLoading ? <PDFViewer width="1000px" height="600px">
       <Document>
         <Page size="A4" style={styles.page}>
           <View
@@ -130,7 +148,7 @@ const PdfInvoice = (props) => {
                 {"Bill To"}
               </Text>
               <Text>{"Rahul Jain"}</Text>
-              <Text>{formFields.customerNumber}</Text>
+              <Text>{formFields.customer.phone}</Text>
               <Text>{"Client Address"}</Text>
               <Text>{"Gwalior, 474011"}</Text>
             </View>
@@ -232,7 +250,7 @@ const PdfInvoice = (props) => {
             </View>
           </View>
 
-          {formFields.orderItems.map((productLine, i) => {
+          {formFields.orderItem.map((productLine, i) => {
             return (
               <View
                 key={i}
@@ -251,7 +269,7 @@ const PdfInvoice = (props) => {
                     paddingBottom: "10px",
                   }}
                 >
-                  <Text style={{ color: colorDark }}>{productLine.name}</Text>
+                  <Text style={{ color: colorDark }}>{productLine.itemName}</Text>
                 </View>
                 <View
                   style={{
@@ -385,7 +403,9 @@ const PdfInvoice = (props) => {
           </View>
         </Page>
       </Document>
-    </PDFViewer>
+    </PDFViewer>:<div>loading....</div>
+    }
+    </>
   );
 };
 

@@ -9,12 +9,12 @@ export const getCall = (path,headers, showFailureMessage = false) => {
   let mergedHeader
 
   if (headers) {
-    mergedHeader = {...headers,...header}
+    mergedHeader = {...headers,...{headers:header}}
   } else {
-    mergedHeader = header
+    mergedHeader = {headers:header}
   }
     return new Promise((resolve, reject) => {
-        axios.get(config.baseUrl + path, {headers:header}
+        axios.get(config.baseUrl + path, mergedHeader
             ).then(function (responseArr) {
               resolve(responseArr.data.data)
             })
@@ -34,10 +34,10 @@ export const getCall = (path,headers, showFailureMessage = false) => {
 export const postCall = (path, data, showFailureMessage = false) => {
 
     return new Promise((resolve, reject) => {
-        axios.post(config.baseUrl + path, data, header
+        axios.post(config.baseUrl + path, data, {headers:header}
             ).then(function (responseArr) {
               console.log('SUCCESS!!');
-              resolve(responseArr.data.data)
+              resolve(responseArr.data)
             })
             .catch(function (reason) {
               if (showFailureMessage) {
@@ -52,10 +52,18 @@ export const postCall = (path, data, showFailureMessage = false) => {
     
 }
 
-export const putCall = (path, data, showFailureMessage = false) => {
+export const putCall = (path, data,  showFailureMessage = false, configs = {}) => {
+
+  let mergedHeader
+
+  if (configs) {
+    mergedHeader = {...configs,...{headers:header}}
+  } else {
+    mergedHeader = {headers:header}
+  }
 
   return new Promise((resolve, reject) => {
-      axios.put(config.baseUrl + path, data, header
+      axios.put(config.baseUrl + path, data, mergedHeader
           ).then(function (responseArr) {
             console.log('SUCCESS!!');
             resolve(responseArr.data.data)

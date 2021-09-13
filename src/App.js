@@ -28,7 +28,6 @@ import {useState} from 'react';
 
 function App() {
 
-  //localStorage.removeItem("user");
 const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('user'))
 
 const onLogout = () => {
@@ -51,8 +50,9 @@ const onLogin = () => {
         <PrivateRoute path='/addCustomer' exact component={AddCustomer} />
         <PrivateRoute path='/reports/reports2' exact component={ReportsTwo} />
         <PrivateRoute path='/createInvoice' exact component={CreateInvoice} />
+        <PrivateRoute path='/createInvoice/:orderId' exact component={CreateInvoice} />
         <PrivateRoute path='/team' exact component={Team} />
-        <PrivateRoute path='/pdf' exact component={PdfInvoice} />
+        <PrivateRoute path='/pdf/:orderId' exact component={PdfInvoice} />
         <PrivateRoute path='/itemView' exact component={ItemView} />
         <PrivateRoute path='/invoiceList' exact component={InvoiceList} />
         <PrivateRoute path='/createPurchase' exact component={PurchaseOrder} /> 

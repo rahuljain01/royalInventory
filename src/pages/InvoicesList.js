@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Card from "../components/Card/Card";
 import FilterButton from "../components/FilterButton/FilterButton";
-import Table from "../components/Table/Table";
 import "./InvoiceList.css";
 import DateInput from '../components/DateInput/DateInput'
 import LinkButton from "../components/Button/LinkButton/LinkButton";
 import PageTitleContainer from "../components/PageTitleContainer/PageTitleContainer";
-import { getCall } from "../helper/ApiHelper";
+import { getCall,putCall } from "../helper/ApiHelper";
+import InvoiceTable from "../components/Invoice/InvoiceTable";
+import { showMessageWithMultipleButton } from '../components/Alert/AlertPopup';
 
-var heading = ['Invoice Id', 'Name', 'Amount', 'Invoice Date', 'Delivery Date'];
+
+var heading = ['Invoice Id', 'Name', 'Amount', 'Invoice Date', 'Delivery Date', 'Status'];
 
 const InvoicesList = () => {
   const [invoices, setInvoices] = useState([]);
@@ -38,11 +40,38 @@ const InvoicesList = () => {
   }, []);
 
   const onEditClick = (index) => {
-    history.push({ pathname: "/createInvoice", state: invoices[index] });
+    history.push({ pathname: "/createInvoice/" + invoices[index].orderId});
     console.log('edit clicked for index: ' + index)
   }
   const onCancelClick = (index) => {
 
+  }
+
+  const onStatusSelection = (index, status , resetDropdown) => {
+
+    const statusDict = {'Pending':'p', 'Delivered':'d', 'Cencel':'c'}
+
+    showMessageWithMultipleButton('Do you really want to change order status?', {
+      buttons: {
+        cancel: 'cancel',
+        Yes: true,
+      },
+    }).then((value) => {
+      if (value) {
+        let invoice = filteredInvoices[index]
+        invoice.status = statusDict[status]
+        putCall('orders/' + filteredInvoices[index].orderId,invoice).then(function (responseArr) {
+          console.log("SUCCESS!!");
+        })
+        .catch(function (reason) {
+          alert(reason);
+        });
+      } else {
+        resetDropdown()
+      }
+
+    })
+    
   }
 
   function checkMatchesIninvoices(item, value) {
@@ -130,6 +159,9 @@ const InvoicesList = () => {
     setInvoices(invoices)
   }
 
+  const status = invoices.map( (invoice) => (
+    invoice.status
+  ))
   return (
     <PageTitleContainer title="Invoice List">
 
@@ -165,7 +197,7 @@ const InvoicesList = () => {
                             </LinkButton>
         </div>
       <Card className="invoice-container">
-        <Table heading={heading} body={invoiceData} onEditClick={onEditClick} onCancelClick={onCancelClick}/>
+        <InvoiceTable heading={heading} body={invoiceData} onEditClick={onEditClick} onCancelClick={onCancelClick} status={status} onStatusSelection={onStatusSelection}/>
       </Card>
 
       {/* <Card className="invoice-container">

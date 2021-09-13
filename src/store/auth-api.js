@@ -21,6 +21,7 @@ export const login = (username, password) => {
       })
       .then((response) => {
         if (response) {
+          localStorage.removeItem("user");
           localStorage.setItem("user", JSON.stringify(response.data));
         }
         resolve(response.data);
